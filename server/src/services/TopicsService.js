@@ -36,7 +36,7 @@ class TopicsService {
     async editTopic(topicData, id, accountId) {
         const topic = await this.getTopic(id)
         if (!topic) { throw new Error(`no topic with the Id: ${id}`) }
-        if (topic.accountId != accountId) { throw new Forbidden(`That's not yours, give it back you thief!`) }
+        if (topic.creatorId != accountId) { throw new Forbidden(`That's not yours, give it back you thief!`) }
         topic.name = topicData.name || topic.name
         topic.description = topicData.description || topic.description
         topic.picture = topicData.picture || topic.picture
@@ -46,7 +46,7 @@ class TopicsService {
     async deleteTopic(id, accountId) {
         const topic = await this.getTopic(id)
         if (!topic) { throw new Error(`Can't find Tag: ${topic.name}`) }
-        if (accountId != topic.accountId) { throw new Forbidden('Thats not yours!') }
+        if (accountId != topic.creatorId) { throw new Forbidden('Thats not yours!') }
         await dbContext.Topics.findByIdAndDelete(topic.id)
         return `Deleted Topic: ${topic.name}`
     }
