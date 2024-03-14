@@ -10,7 +10,15 @@ export const TopicsSchema = new Schema(
 )
 TopicsSchema.virtual('topicTag', {
     localField: '_id',
-    foreignField: '_id',
-    justOne: false,
-    ref: 'Tags'
+    ref: 'Tags',
+    foreignField: 'Topicid',
+    count: true
 })
+
+
+export class TopicQuery {
+    constructor(queryObject) {
+        this.name = new RegExp(queryObject.name, 'ig')
+        this.description = new RegExp(queryObject.description, 'ig')
+    }
+}

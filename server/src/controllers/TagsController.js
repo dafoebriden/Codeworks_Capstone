@@ -27,7 +27,7 @@ export class TagsController extends BaseController {
     }
     async deleteTag(req, res, next) {
         try {
-            const tag = await tagsService.deleteTag(req.params.id)
+            const tag = await tagsService.deleteTag(req.params.id, req.userInfo.id)
             res.send(tag)
         } catch (error) {
             next(error)

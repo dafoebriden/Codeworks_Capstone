@@ -10,21 +10,13 @@ export class TopicsController extends BaseController {
             .get('/:id', this.getTopic)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTopic)
+            .put('/id', this.editTopic)
             .delete('/:id', this.deleteTopic)
     }
-    async createTopic(req, res, next) {
-        try {
-            const topicData = req.body
-            topicData.creatorId = req.userInfo.id
-            const topic = await topicsService.createTopic(topicData)
-            res.send(topic)
-        } catch (error) {
-            next(error)
-        }
-    }
+
     async getTopics(req, res, next) {
         try {
-            const topics = await topicsService.getTopics()
+            const topics = await topicsService.getTopics(req.query)
             res.send(topics)
         } catch (error) {
             next(error)
@@ -33,6 +25,16 @@ export class TopicsController extends BaseController {
     async getTopic(req, res, next) {
         try {
             const topic = await topicsService.getTopic(req.params.id)
+            res.send(topic)
+        } catch (error) {
+            next(error)
+        }
+    }
+    async createTopic(req, res, next) {
+        try {
+            const topicData = req.body
+            topicData.creatorId = req.userInfo.id
+            const topic = await topicsService.createTopic(topicData)
             res.send(topic)
         } catch (error) {
             next(error)
@@ -48,7 +50,7 @@ export class TopicsController extends BaseController {
     }
     async deleteTopic(req, res, next) {
         try {
-            const topic = await topicsService.deleteTopic(req.params.id)
+            const topic = await topicsService.deleteTopic(req.params.id, req.userInfo.id)
             res.send(topic)
         } catch (error) {
             next(error)
