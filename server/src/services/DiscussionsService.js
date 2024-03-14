@@ -17,7 +17,7 @@ class DiscussionsService {
 
         const disCount = await dbContext.Discussions.countDocuments(disQuery)
         const responseObject = {
-            dis: dis,
+            discussions: dis,
             page: pageNumber,
             count: disCount,
             totalPages: Math.ceil(disCount / 10)
@@ -37,7 +37,7 @@ class DiscussionsService {
         const dis = await this.getDiscussion(id)
         if (!dis) { throw new Error(`no dis with the Id: ${id}`) }
         if (dis.creatorId != accountId) { throw new Forbidden(`That's not yours, give it back you thief!`) }
-        dis.name = disData.name || dis.name
+        dis.title = disData.title || dis.title
         dis.picture = disData.picture || dis.picture
         dis.description = disData.description || dis.description
         await dis.save()
@@ -45,10 +45,10 @@ class DiscussionsService {
     }
     async deleteDiscussion(id, accountId) {
         const dis = await this.getDiscussion(id)
-        if (!dis) { throw new Error(`Can't find Tag: ${dis.name}`) }
+        if (!dis) { throw new Error(`Can't find Tag: ${dis.title}`) }
         if (accountId != dis.creatorId) { throw new Forbidden('Thats not yours, give it back you thief!') }
         await dbContext.Discussions.findByIdAndDelete(id)
-        return `Deleted discussion: ${dis.name}`
+        return `Deleted discussion: ${dis.title}`
 
     }
 }

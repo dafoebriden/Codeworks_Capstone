@@ -4,6 +4,7 @@ import { ValueSchema } from '../models/Value'
 import { TopicsSchema } from '../models/Topic.js';
 import { TagsSchema } from '../models/Tags.js';
 import { DiscussionsSchema } from '../models/Discussion.js';
+import { CommentsSchema } from '../models/Comment.js';
 
 class DbContext {
   Values = mongoose.model('Value', ValueSchema);
@@ -11,7 +12,7 @@ class DbContext {
   Topics = mongoose.model('Topic', TopicsSchema);
   Tags = mongoose.model('Tag', TagsSchema);
   Discussions = mongoose.model('Discussion', DiscussionsSchema);
-  Comments = mongoose.model('Comment', CommentSchema);
+  Comments = mongoose.model('Comment', CommentsSchema);
 }
 
 export const dbContext = new DbContext()

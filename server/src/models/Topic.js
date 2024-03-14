@@ -18,7 +18,7 @@ TopicsSchema.virtual('creator', {
     localField: 'creatorId',
     foreignField: '_id',
     justOne: true,
-    ref: 'Profile'
+    ref: 'Account'
 })
 
 

@@ -4,7 +4,7 @@ import { commentsService } from "../services/CommentsService.js";
 
 export class CommentsController extends BaseController {
     constructor() {
-        super('api/Comments')
+        super('api/comments')
         this.router
             .get('', this.getComments)
             .get('/:id', this.getComment)

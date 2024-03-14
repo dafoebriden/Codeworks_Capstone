@@ -12,7 +12,7 @@ TagsSchema.virtual('creator', {
     localField: 'creatorId',
     foreignField: '_id',
     justOne: true,
-    ref: 'Profile'
+    ref: 'Account'
 })
 export class TagQuery {
     constructor(queryObject) {
