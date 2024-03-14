@@ -15,7 +15,7 @@ export class DiscussionsController extends BaseController {
     }
     async getDiscussions(req, res, next) {
         try {
-            const dis = await discussionsService.getDiscussions()
+            const dis = await discussionsService.getDiscussions(req.query)
             res.send(dis)
         } catch (error) {
             next(error)
@@ -49,7 +49,7 @@ export class DiscussionsController extends BaseController {
     async deleteDiscussion(req, res, next) {
         try {
             const dis = await discussionsService.deleteDiscussion(req.params.id, req.UserInfo.id)
-            res.send(`Deleted Discussion: ${dis.id}`)
+            res.send(`Deleted Discussion: ${dis}`)
         } catch (error) {
             next(error)
         }

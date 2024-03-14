@@ -1,12 +1,30 @@
 import { dbContext } from "../db/DbContext.js"
+import { TagQuery } from "../models/Tags.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class TagsService {
 
 
-    async getTags() {
-        const tags = await dbContext.Tags.find()
-        return tags
+    async getTags(query) {
+        const pageNumber = parseInt(query.page) || 1
+        const tagLimit = 20
+        const skipNumber = (pageNumber - 1) * tagLimit
+        const tagQuery = new TagQuery(query)
+        const tags = await dbContext.Tags
+            .find(tagQuery)
+            .limit(tagLimit)
+            .skip(skipNumber)
+            // .sort({ fireCount: 'decending' })
+            .populate('creator')
+
+        const tagCount = await dbContext.Tags.countDocuments(tagQuery)
+        const responseObject = {
+            tags: tags,
+            page: pageNumber,
+            count: tagCount,
+            totalPages: Math.ceil(tagCount / 20)
+        }
+        return responseObject
     }
     async createTag(tagData) {
         const tag = await dbContext.Tags.create(tagData)

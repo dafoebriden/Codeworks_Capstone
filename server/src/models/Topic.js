@@ -14,6 +14,12 @@ TopicsSchema.virtual('topicTag', {
     foreignField: 'Topicid',
     count: true
 })
+TopicsSchema.virtual('creator', {
+    localField: 'creatorId',
+    foreignField: '_id',
+    justOne: true,
+    ref: 'Profile'
+})
 
 
 export class TopicQuery {

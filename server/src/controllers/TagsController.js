@@ -12,7 +12,7 @@ export class TagsController extends BaseController {
             .delete('/:id', this.deleteTag)
     }
     async getTags(req, res, next) {
-        const tags = await tagsService.getTags()
+        const tags = await tagsService.getTags(req.query)
         res.send(tags)
     }
     async createTag(req, res, next) {

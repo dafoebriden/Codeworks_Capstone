@@ -8,3 +8,15 @@ export const TagsSchema = new Schema(
         // topicId: { type: Schema.ObjectId, ref: 'Topic', required: true }
     }, { timestamps: true, toJSON: { virtuals: true } }
 )
+TagsSchema.virtual('creator', {
+    localField: 'creatorId',
+    foreignField: '_id',
+    justOne: true,
+    ref: 'Profile'
+})
+export class TagQuery {
+    constructor(queryObject) {
+        this.name = new RegExp(queryObject.name, 'ig')
+        this.emoji = new RegExp(queryObject.description, 'ig')
+    }
+}

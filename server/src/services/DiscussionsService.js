@@ -1,10 +1,28 @@
 import { dbContext } from "../db/DbContext.js"
+import { DiscussionQuery } from "../models/Discussion.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class DiscussionsService {
-    async getDiscussions() {
-        const dis = await dbContext.Discussions.find()
-        return dis
+    async getDiscussions(query) {
+        const pageNumber = parseInt(query.page) || 1
+        const disLimit = 10
+        const skipNumber = (pageNumber - 1) * disLimit
+        const disQuery = new DiscussionQuery(query)
+        const dis = await dbContext.Discussions
+            .find(disQuery)
+            .limit(disLimit)
+            .skip(skipNumber)
+            // .sort({ fireCount: 'decending' })
+            .populate('creator')
+
+        const disCount = await dbContext.Discussions.countDocuments(disQuery)
+        const responseObject = {
+            dis: dis,
+            page: pageNumber,
+            count: disCount,
+            totalPages: Math.ceil(disCount / 10)
+        }
+        return responseObject
     }
     async getDiscussion(id) {
         const dis = await dbContext.Discussions.findById(id)
