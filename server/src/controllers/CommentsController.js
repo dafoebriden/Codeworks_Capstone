@@ -15,7 +15,7 @@ export class CommentsController extends BaseController {
     }
     async getComments(req, res, next) {
         try {
-            const com = await commentsService.getComment(req.query)
+            const com = await commentsService.getComments(req.query)
             res.send(com)
         } catch (error) {
             next(error)
