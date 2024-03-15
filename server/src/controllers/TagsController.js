@@ -13,6 +13,15 @@ export class TagsController extends BaseController {
             .post('', this.createTag)
             .delete('/:id', this.deleteTag)
     }
+    async createTag(req, res, next) {
+        try {
+            req.body.creatorId = req.userInfo.id
+            const tag = await tagsService.createTag(req.body)
+            res.send(tag)
+        } catch (error) {
+            next(error)
+        }
+    }
     async getTags(req, res, next) {
         const tags = await tagsService.getTags(req.query)
         res.send(tags)
@@ -25,16 +34,7 @@ export class TagsController extends BaseController {
             next(error)
         }
     }
-    async createTag(req, res, next) {
-        try {
-            const tagData = req.body
-            tagData.creatorId = req.userInfo.id
-            const tag = await tagsService.createTag(tagData)
-            res.send(tag)
-        } catch (error) {
-            next(error)
-        }
-    }
+
     async deleteTag(req, res, next) {
         try {
             const tag = await tagsService.deleteTag(req.params.id, req.userInfo.id)

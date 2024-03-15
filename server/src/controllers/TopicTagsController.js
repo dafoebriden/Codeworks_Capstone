@@ -6,12 +6,13 @@ export class TopicTagsController extends BaseController {
     constructor() {
         super('api/topicTags')
         this.router
-            .get('', this.getTopicTags)
             .use(Auth0Provider.getAuthorizedUserInfo)
+            .post('', this.createTopicTag)
     }
-    async getTopicTags(req, res, next) {
+    async createTopicTag(req, res, next) {
         try {
-            const topicTags = await topicTagsService.getTopicTags()
+            req.body.creatorId = req.userInfo.id
+            const topicTags = await topicTagsService.createTopicTag(req.data)
             res.send(topicTags)
         } catch (error) {
             next(error)

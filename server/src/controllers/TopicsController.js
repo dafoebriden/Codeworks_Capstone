@@ -15,11 +15,11 @@ export class TopicsController extends BaseController {
             .put('/:id', this.editTopic)
             .delete('/:id', this.deleteTopic)
     }
-
-    async getTopics(req, res, next) {
+    async createTopic(req, res, next) {
         try {
-            const topics = await topicsService.getTopics(req.query)
-            res.send(topics)
+            req.body.creatorId = req.userInfo.id
+            const topic = await topicsService.createTopic(req.body)
+            res.send(topic)
         } catch (error) {
             next(error)
         }
@@ -32,6 +32,15 @@ export class TopicsController extends BaseController {
             next(error)
         }
     }
+    async getTopics(req, res, next) {
+        try {
+            const topics = await topicsService.getTopics(req.query)
+            res.send(topics)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async getTopicTagsByTopic(req, res, next) {
         try {
             const topicTags = await topicTagsService.getTopicTagsByTopic(req.params.id)
@@ -40,16 +49,7 @@ export class TopicsController extends BaseController {
             next(error)
         }
     }
-    async createTopic(req, res, next) {
-        try {
-            const topicData = req.body
-            topicData.creatorId = req.userInfo.id
-            const topic = await topicsService.createTopic(topicData)
-            res.send(topic)
-        } catch (error) {
-            next(error)
-        }
-    }
+
     async editTopic(req, res, next) {
         try {
             const topic = await topicsService.editTopic(req.data, req.params.id, req.userInfo.id)
