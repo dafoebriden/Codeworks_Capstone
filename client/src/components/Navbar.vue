@@ -1,41 +1,25 @@
 <template>
-  <nav class="navbar navbar-expand-sm navbar-dark bg-black px-3">
+  <div class="navbar px-3 py-0">
+    <!-- <nav class="navbar navbar-expand-sm navbar-dark px-3"> -->
     <router-link class="navbar-brand d-flex" :to="{ name: 'Home' }">
       <div class="d-flex flex-column align-items-center">
-        <h1><i class="fw-bolder"><span class="fire-text">Blaze</span></i></h1>
+        <h1 class="m-0"><i class="fw-bolder"><span class="fire-text">Blaze</span></i></h1>
       </div>
     </router-link>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
       aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarText">
-      <div>
-        <ul class="navbar-nav">
-          <li>
-            <router-link :to="{}" class="btn text-success lighten-30 selectable text-uppercase">
-
-            </router-link>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <form>
-          <div>
-            <input type="email" class="form-control search-bar" id="exampleInputEmail1" aria-describedby="emailHelp"
-              placeholder="🔍 Search Blaze">
-          </div>
-        </form>
-      </div>
-
-      <div class="d-flex">
-        <button class="btn text-light" @click="toggleTheme">
-          <i class="mdi" :class="theme == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"></i>
-        </button>
-        <Login />
-      </div>
+    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarText"> -->
+    <div class="d-flex">
+      <button class="btn text-light py-0" @click="toggleTheme">
+        <i class="mdi" :class="theme == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"></i>
+      </button>
+      <Login />
     </div>
-  </nav>
+    <!-- </div> -->
+    <!-- </nav> -->
+  </div>
 </template>
 
 <script>
@@ -73,6 +57,13 @@ a:hover {
   text-transform: uppercase;
 }
 
+.navbar {
+  background-color: black;
+  /* box-shadow: 0px 2px 15px white; */
+  border-bottom: 1px solid rgba(255, 255, 255, .5);
+  height: 6vh;
+}
+
 .navbar-nav .router-link-exact-active {
   border-bottom: 2px solid var(--bs-success);
   border-bottom-left-radius: 0;
@@ -88,13 +79,12 @@ a:hover {
     0px -20px 40px #C33;
 }
 
-.search-bar {
-  box-shadow: inset -4px 4px 10px 0px black;
-}
+
+
 
 @media screen and (min-width: 576px) {
   nav {
-    height: 64px;
+    height: 6vh;
   }
 }
 </style>
