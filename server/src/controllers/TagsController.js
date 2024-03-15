@@ -26,6 +26,7 @@ export class TagsController extends BaseController {
         const tags = await tagsService.getTags(req.query)
         res.send(tags)
     }
+    // NOTE getting all the topics related to a tag
     async getTopicTagsByTag(req, res, next) {
         try {
             const topicTags = await topicTagsService.getTopicTagsByTag(req.params.id)

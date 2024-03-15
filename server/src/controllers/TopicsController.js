@@ -40,7 +40,7 @@ export class TopicsController extends BaseController {
             next(error)
         }
     }
-
+    // NOTE getting all the tags related to a topic
     async getTopicTagsByTopic(req, res, next) {
         try {
             const topicTags = await topicTagsService.getTopicTagsByTopic(req.params.id)
