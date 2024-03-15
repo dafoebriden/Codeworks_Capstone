@@ -4,8 +4,8 @@ import { Forbidden } from "../utils/Errors.js"
 
 class TopicsService {
 
-    createTopic(topicData) {
-        const topic = dbContext.Topics.create(topicData)
+    async createTopic(topicData) {
+        const topic = await dbContext.Topics.create(topicData)
         return topic
     }
     async getTopics(query) {
@@ -17,8 +17,8 @@ class TopicsService {
             .find(topicQuery)
             .limit(topicLimit)
             .skip(skipNumber)
-            // .sort({ fireCount: 'decending' })
-            .populate('topicTag')
+        // .sort({ fireCount: 'decending' })
+        // .populate('topicTag')
 
         const topicCount = await dbContext.Topics.countDocuments(topicQuery)
         const responseObject = {
@@ -38,7 +38,7 @@ class TopicsService {
         if (!topic) { throw new Error(`no topic with the Id: ${id}`) }
         if (topic.creatorId != accountId) { throw new Forbidden(`That's not yours, give it back you thief!`) }
         topic.name = topicData.name || topic.name
-        topic.description = topicData.description || topic.description
+        topic.quote = topicData.quote || topic.quote
         topic.picture = topicData.picture || topic.picture
         await topic.save()
         return topic

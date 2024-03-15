@@ -1,9 +1,10 @@
 <template>
   <div class="navbar px-3 py-0">
     <!-- <nav class="navbar navbar-expand-sm navbar-dark px-3"> -->
-    <router-link class="navbar-brand d-flex" :to="{ name: 'Home' }">
-      <div class="d-flex flex-column align-items-center">
-        <h1 class="m-0"><i class="fw-bolder"><span class="fire-text">Blaze</span></i></h1>
+    <router-link class="navbar-brand d-flex pt-0" :to="{ name: 'Home' }">
+      <div class="d-flex flex-column align-items-center ">
+        <h1 class="m-0"><i class="fw-bolder d-flex align-items-center"><span
+              class="fire-text text-white">Blaze</span></i></h1>
       </div>
     </router-link>
     <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
@@ -11,6 +12,10 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarText"> -->
+    <div class="d-flex align-items-center">
+      <input type="email" class="form-control search-bar" id="exampleInputEmail1" aria-describedby="emailHelp"
+        placeholder="🔍 Search Blaze">
+    </div>
     <div class="d-flex">
       <button class="btn text-light py-0" @click="toggleTheme">
         <i class="mdi" :class="theme == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"></i>
@@ -53,12 +58,20 @@ a:hover {
   text-decoration: none;
 }
 
+.search-bar {
+  box-shadow: inset -4px 4px 10px 0px black;
+  margin: auto;
+  max-width: 800px;
+}
+
 .nav-link {
   text-transform: uppercase;
 }
 
 .navbar {
   background-color: black;
+  display: flex;
+  align-items: center;
   /* box-shadow: 0px 2px 15px white; */
   border-bottom: 1px solid rgba(255, 255, 255, .5);
   height: 6vh;
@@ -70,8 +83,7 @@ a:hover {
   border-bottom-right-radius: 0;
 }
 
-.fire-text {
-  font-family: "Open Sans", sans-serif;
+.fire-text:hover {
   color: #f5f5f5;
   text-shadow: 0px -2px 4px #fff,
     0px -2px 10px #FF3,

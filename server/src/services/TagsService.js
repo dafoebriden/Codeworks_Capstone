@@ -1,5 +1,5 @@
 import { dbContext } from "../db/DbContext.js"
-import { TagQuery } from "../models/Tags.js"
+import { TagQuery } from "../models/Tag.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class TagsService {

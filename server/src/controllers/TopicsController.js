@@ -1,6 +1,7 @@
 import { Auth0Provider } from "@bcwdev/auth0provider";
 import BaseController from "../utils/BaseController.js";
 import { topicsService } from "../services/TopicsService.js";
+import { topicTagsService } from "../services/TopicTagsService.js";
 
 export class TopicsController extends BaseController {
     constructor() {
@@ -8,9 +9,10 @@ export class TopicsController extends BaseController {
         this.router
             .get('', this.getTopics)
             .get('/:id', this.getTopic)
+            .get('/:id/topicTags', this.getTopicTagsByTopic)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTopic)
-            .put('/id', this.editTopic)
+            .put('/:id', this.editTopic)
             .delete('/:id', this.deleteTopic)
     }
 
@@ -26,6 +28,14 @@ export class TopicsController extends BaseController {
         try {
             const topic = await topicsService.getTopic(req.params.id)
             res.send(topic)
+        } catch (error) {
+            next(error)
+        }
+    }
+    async getTopicTagsByTopic(req, res, next) {
+        try {
+            const topicTags = await topicTagsService.getTopicTagsByTopic(req.params.id)
+            res.send(topicTags)
         } catch (error) {
             next(error)
         }

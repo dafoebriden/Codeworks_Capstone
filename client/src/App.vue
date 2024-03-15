@@ -3,29 +3,7 @@
     <Navbar />
   </header>
   <main>
-    <div class="container-fluid my-2">
-      <div class="row height small-screen">
-        <div class="col-11 col-lg-2 bar p-0 d-flex flex-column">
-          <div class="d-flex flex-column justify-content-end mb-3 line-bottom">
-            <RouterLink class="bar-tag " :to="{ name: 'Home' }"><span class="fs-2">🏡</span> Home
-            </RouterLink>
-            <RouterLink class="bar-tag" :to="{ name: 'Home' }"><span class="fs-2">🔥</span> Hot Topics
-            </RouterLink>
-          </div>
-          <div class="px-2">
-            <form>
-              <div>
-                <input type="email" class="form-control search-bar" id="exampleInputEmail1" aria-describedby="emailHelp"
-                  placeholder="🔍 Search Blaze">
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="col-11 col-lg-10 main-page">
-          <router-view />
-        </div>
-      </div>
-    </div>
+    <router-view />
   </main>
 
 </template>
@@ -78,7 +56,7 @@ footer {
   padding-bottom: 1px;
   padding-left: 3px;
   padding-right: 3px;
-  margin: 3px;
+  margin: 5px;
   border-radius: 10px;
   // background-color: rgba(255, 255, 255, .1);
 }
