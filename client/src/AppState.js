@@ -4,8 +4,8 @@ import { reactive } from 'vue'
 export const AppState = reactive({
   user: {},
   /** @type {import('./models/Account.js').Account} */
-  account: {}
+  account: {},
 
-  // /** @type {import('./models/Topic.js').Topic[]} */
-  // Topics: []
+  /** @type {import('./models/Topic.js').Topic[]} */
+  topics: []
 })

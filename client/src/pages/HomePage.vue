@@ -25,8 +25,14 @@
         </div>
       </div>
       <div class="col-11 col-lg-10 main-page">
-        <div>
-
+        <div class="row d-flex justify-content-evenly">
+          <div class="topic-card" v-for="topic in topics" :key="topic.id">
+            <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }"></div>
+            <div class="topic-card-bot text-white">
+              <!-- <h1>{{ topic.name }}</h1>
+              <p>{{ topic.quote }}</p> -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -34,9 +40,10 @@
 </template>
 
 <script>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { topicsService } from '../services/TopicsService';
 import Pop from '../utils/Pop';
+import { AppState } from '../AppState';
 
 
 export default {
@@ -53,7 +60,7 @@ export default {
       }
     }
     return {
-
+      topics: computed(() => AppState.topics)
 
     }
   }
@@ -61,16 +68,33 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.emoji {
-  color: white;
-  padding-top: 0px;
-  padding-bottom: 1px;
-  padding-left: 3px;
-  padding-right: 3px;
-  margin: 5px;
+.topic-card {
+  width: 300px;
+  height: 300px;
+  margin-bottom: 50px;
+  padding: 0;
+  border-radius: 20px;
+  box-shadow: 0px 0px 25px white;
+
 }
 
-.emoji:hover {
-  text-shadow: 0px 0px 30px rgba(255, 255, 255, 1);
+.topic-img {
+  height: 40%;
+  object-position: center;
+  width: 100%;
+  border-top: 3px solid black;
+  border-left: 3px solid black;
+  border-right: 3px solid black;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: inset 0px 0px 0px 20px black;
+}
+
+.topic-card-bot {
+  height: 60%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: black;
+  box-shadow: inset 0px 0px 15px 0px white;
 }
 </style>

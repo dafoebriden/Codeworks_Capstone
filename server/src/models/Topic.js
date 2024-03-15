@@ -21,6 +21,6 @@ TopicsSchema.virtual('creator', {
 export class TopicQuery {
     constructor(queryObject) {
         this.name = new RegExp(queryObject.name, 'ig')
-        this.description = new RegExp(queryObject.description, 'ig')
+        this.quote = new RegExp(queryObject.quote, 'ig')
     }
 }
