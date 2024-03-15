@@ -3,7 +3,18 @@
     <Navbar />
   </header>
   <main>
-    <router-view />
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-3 side-bar">
+        </div>
+        <div class="col-9 bg-black">
+          <router-view />
+        </div>
+      </div>
+    </div>
+
+
+
   </main>
   <footer class="bg-dark text-light">
     Made by Briden Dafoe
@@ -36,5 +47,11 @@ footer {
   display: grid;
   place-content: center;
   height: 32px;
+}
+
+.side-bar {
+  background-color: black;
+  box-shadow: 0px 0px 3px 3px white;
+  height: 100vh;
 }
 </style>
