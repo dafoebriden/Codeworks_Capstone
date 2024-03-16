@@ -18,10 +18,10 @@
         <div class="d-flex">
           <div class="tag" v-for="tag in tags" :key="tag.id">
             <div class="tag-top">
-              <p>{{ tag.emoji }}</p>
+              <p class="m-0">{{ tag.emoji }}</p>
             </div>
             <div class="tag-bot">
-              <p>{{ tag.name }}</p>
+              <p class="m-0">{{ tag.name }}</p>
             </div>
           </div>
         </div>
@@ -30,9 +30,9 @@
         <div class="row d-flex justify-content-evenly">
           <div class="topic-card" v-for="topic in topics" :key="topic.id">
             <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }"></div>
-            <div class="topic-card-bot text-white">
+            <div class="topic-card-bot">
               <div class="ms-3">
-                <h1>{{ topic.name }}</h1>
+                <h1 class="mb-0">{{ topic.name }}</h1>
                 <p>{{ topic.quote }}</p>
               </div>
             </div>
@@ -76,7 +76,6 @@ export default {
     return {
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags)
-
     }
   }
 }
@@ -84,25 +83,35 @@ export default {
 
 <style scoped lang="scss">
 .tag {
-  border-radius: 3px;
+  border-radius: 10px;
   box-shadow: 0px 0px 5px white;
-  width: 50px;
-  height: 50px;
-  margin-left: 2;
-  margin-right: 2;
-  margin-bottom: 2;
+  width: 100px;
+  height: 100px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
 .tag-top {
   background-color: black;
   color: white;
   height: 50%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: xx-large;
 }
 
 .tag-bot {
   background-color: white;
   color: black;
   height: 50%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .topic-card {
@@ -113,7 +122,7 @@ export default {
   margin-left: 25px;
   padding: 0;
   border-radius: 20px;
-  box-shadow: 0px 0px 25px white;
+  box-shadow: 0px 0px 15px -2px white;
 
 }
 
@@ -134,7 +143,8 @@ export default {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   background-color: black;
-  border: 1px solid rgb(100, 100, 100);
-  box-shadow: inset 0px 0px 15px 0px white;
+  border: 1px solid rgb(0, 0, 0);
+  color: white;
+  // box-shadow: inset 0px 0px 15px 0px white;
 }
 </style>
