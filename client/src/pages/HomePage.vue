@@ -29,8 +29,10 @@
           <div class="topic-card" v-for="topic in topics" :key="topic.id">
             <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }"></div>
             <div class="topic-card-bot text-white">
-              <!-- <h1>{{ topic.name }}</h1>
-              <p>{{ topic.quote }}</p> -->
+              <div class="ms-3">
+                <h1>{{ topic.name }}</h1>
+                <p>{{ topic.quote }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -72,6 +74,8 @@ export default {
   width: 300px;
   height: 300px;
   margin-bottom: 50px;
+  margin-right: 25px;
+  margin-left: 25px;
   padding: 0;
   border-radius: 20px;
   box-shadow: 0px 0px 25px white;
@@ -82,12 +86,12 @@ export default {
   height: 40%;
   object-position: center;
   width: 100%;
-  border-top: 3px solid black;
-  border-left: 3px solid black;
-  border-right: 3px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  box-shadow: inset 0px 0px 0px 20px black;
+  box-shadow: inset 0px 0px 50px 5px black;
 }
 
 .topic-card-bot {
