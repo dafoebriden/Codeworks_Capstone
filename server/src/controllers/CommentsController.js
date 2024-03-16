@@ -40,7 +40,7 @@ export class CommentsController extends BaseController {
     }
     async editComment(req, res, next) {
         try {
-            const com = await commentsService.editComment(req.body, req.params.id, req.UserInfo.id)
+            const com = await commentsService.editComment(req.body, req.params.id, req.userInfo.id)
             res.send(com)
         } catch (error) {
             next(error)
@@ -48,7 +48,7 @@ export class CommentsController extends BaseController {
     }
     async deleteComment(req, res, next) {
         try {
-            const com = await commentsService.deleteComment(req.params.id, req.UserInfo.id)
+            const com = await commentsService.deleteComment(req.params.id, req.userInfo.id)
             res.send(`Deleted Comment: ${com}`)
         } catch (error) {
             next(error)

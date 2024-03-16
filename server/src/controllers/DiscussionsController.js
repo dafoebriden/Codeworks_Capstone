@@ -17,7 +17,7 @@ export class DiscussionsController extends BaseController {
     }
     async createDiscussion(req, res, next) {
         try {
-            req.body.creatorId = req.UserInfo.id
+            req.body.creatorId = await req.userInfo.id
             const dis = await discussionsService.createDiscussion(req.body)
             res.send(dis)
         } catch (error) {
@@ -58,7 +58,7 @@ export class DiscussionsController extends BaseController {
     }
     async deleteDiscussion(req, res, next) {
         try {
-            const dis = await discussionsService.deleteDiscussion(req.params.id, req.UserInfo.id)
+            const dis = await discussionsService.deleteDiscussion(req.params.id, req.userInfo.id)
             res.send(`Deleted Discussion: ${dis}`)
         } catch (error) {
             next(error)

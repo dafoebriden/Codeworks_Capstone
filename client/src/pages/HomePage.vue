@@ -78,10 +78,7 @@ export default {
     }
     async function getTopic(id) {
       try {
-
-        const tag = await topicsService.getTopic(id)
         router.push(`topics/${id}`)
-        return tag
       } catch (error) {
         Pop.error(error)
       }

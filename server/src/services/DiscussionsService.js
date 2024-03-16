@@ -5,6 +5,7 @@ import { Forbidden } from "../utils/Errors.js"
 class DiscussionsService {
     async getDiscussionsForTopic(topicId) {
         const dis = await dbContext.Discussions.find({ topicId })
+        return dis
     }
     async getDiscussions(query) {
         const pageNumber = parseInt(query.page) || 1

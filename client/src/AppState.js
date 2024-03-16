@@ -12,6 +12,9 @@ export const AppState = reactive({
   /** @type {import('./models/Discussion.js').Discussion[]} */
   discussions: [],
   
+  /** @type {import('./models/Discussion.js').Discussion | null} */
+  activeDiscussions: null,
+  
   /** @type {import('./models/Topic.js').Topic | null} */
   activeTopic: null,
 
