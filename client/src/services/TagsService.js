@@ -5,6 +5,8 @@ import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class TagsService{
+    getTag() {
+    }
     async getTags(){
         try {
             const res = await api.get('api/tags')

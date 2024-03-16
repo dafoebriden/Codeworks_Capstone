@@ -6,6 +6,7 @@ import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class TopicsService{
+
 async getTopics() {
     try {
         const res = await api.get('api/topics')
@@ -14,9 +15,24 @@ async getTopics() {
     } catch (error) {
         Pop.error(error)
     }
-
-
 }
+    async getTopic(id) {
+        try {
+            const res = await api.get(`api/topics/${id}`)
+            logger.log('Got Topic:', res.data)
+            AppState.activeTopic = new Topic(res.data)
+        } catch (error) {
+            Pop.error(error)
+        }
+    }
+    async getTopicTags(id) {
+        try {
+            const res = await api.get(`api/topics/${id}/topicTags`)
+            logger.log('Got TopicTags:', res.data)
+        } catch (error) {
+            Pop.error(error)
+        }
+    }
 
 }
 export const topicsService = new TopicsService()

@@ -3,6 +3,11 @@ import { CommentQuery } from "../models/Comment.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class CommentsService {
+    async createComment(comData) {
+
+        const com = await dbContext.Comments.create(comData)
+        return com
+    }
     async getComments(query) {
         const pageNumber = parseInt(query.page) || 1
         const commentLimit = 20
@@ -28,9 +33,8 @@ class CommentsService {
         const com = await dbContext.Comments.findById(id)
         return com
     }
-    async createComment(comData) {
-
-        const com = await dbContext.Comments.create(comData)
+    async getCommentsForDiscussion(discussionId) {
+        const com = await dbContext.Comments.find({ discussionId })
         return com
     }
     async editComment(comData, id, accountId) {

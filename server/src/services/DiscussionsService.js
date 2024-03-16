@@ -3,6 +3,9 @@ import { DiscussionQuery } from "../models/Discussion.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class DiscussionsService {
+    async getDiscussionsForTopic(topicId) {
+        const dis = await dbContext.Discussions.find({ topicId })
+    }
     async getDiscussions(query) {
         const pageNumber = parseInt(query.page) || 1
         const disLimit = 10

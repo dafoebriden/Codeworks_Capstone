@@ -9,6 +9,13 @@ export const AppState = reactive({
   /** @type {import('./models/Topic.js').Topic[]} */
   topics: [],
 
+  /** @type {import('./models/Discussion.js').Discussion[]} */
+  discussions: [],
+  
+  /** @type {import('./models/Topic.js').Topic | null} */
+  activeTopic: null,
+
   /** @type {import('./models/Tag.js').Tag[]} */
   tags: []
+  
 })
