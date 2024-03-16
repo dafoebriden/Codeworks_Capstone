@@ -7,5 +7,8 @@ export const AppState = reactive({
   account: {},
 
   /** @type {import('./models/Topic.js').Topic[]} */
-  topics: []
+  topics: [],
+
+  /** @type {import('./models/Tag.js').Tag[]} */
+  tags: []
 })

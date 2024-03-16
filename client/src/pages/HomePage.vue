@@ -15,13 +15,15 @@
             </RouterLink>
           </div>
         </div>
-        <div class="px-2">
-          <form>
-            <!-- <div>
-              <input type="email" class="form-control search-bar" id="exampleInputEmail1" aria-describedby="emailHelp"
-                placeholder="🔍 Search Blaze">
-            </div> -->
-          </form>
+        <div class="d-flex">
+          <div class="tag" v-for="tag in tags" :key="tag.id">
+            <div class="tag-top">
+              <p>{{ tag.emoji }}</p>
+            </div>
+            <div class="tag-bot">
+              <p>{{ tag.name }}</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-11 col-lg-10 main-page">
@@ -46,12 +48,14 @@ import { computed, onMounted } from 'vue';
 import { topicsService } from '../services/TopicsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
+import { tagsService } from '../services/TagsService';
 
 
 export default {
   setup() {
     onMounted(() => {
       getTopics()
+      getTags()
     })
     async function getTopics() {
       try {
@@ -61,8 +65,17 @@ export default {
         Pop.error
       }
     }
+    async function getTags() {
+      try {
+        const tags = await tagsService.getTags()
+        return tags
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
     return {
-      topics: computed(() => AppState.topics)
+      topics: computed(() => AppState.topics),
+      tags: computed(() => AppState.tags)
 
     }
   }
@@ -70,6 +83,28 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.tag {
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px white;
+  width: 50px;
+  height: 50px;
+  margin-left: 2;
+  margin-right: 2;
+  margin-bottom: 2;
+}
+
+.tag-top {
+  background-color: black;
+  color: white;
+  height: 50%;
+}
+
+.tag-bot {
+  background-color: white;
+  color: black;
+  height: 50%;
+}
+
 .topic-card {
   width: 300px;
   height: 300px;
@@ -99,6 +134,7 @@ export default {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   background-color: black;
+  border: 1px solid rgb(100, 100, 100);
   box-shadow: inset 0px 0px 15px 0px white;
 }
 </style>
