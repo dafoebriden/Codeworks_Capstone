@@ -12,13 +12,13 @@ export const AppState = reactive({
   /** @type {import('./models/Discussion.js').Discussion[]} */
   discussions: [],
   
-  /** @type {import('./models/Discussion.js').Discussion | []} */
+  /** @type {import('./models/Discussion.js').Discussion[]} */
   activeDiscussions: [],
 
-  /** @type {import('./models/TopicTag.js').TopicTag | []} */
+  /** @type {import('./models/TopicTag.js').TopicTag[]} */
   topicTags: [],
 
-  /** @type {import('./models/TopicTag.js').TopicTag | []} */
+  /** @type {import('./models/TopicTag.js').TopicTag[]} */
   activeTopicTags: [],
   
   /** @type {import('./models/Topic.js').Topic | null} */

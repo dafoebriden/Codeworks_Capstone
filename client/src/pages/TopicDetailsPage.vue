@@ -2,7 +2,7 @@
     <div v-if="topic" class="container-fluid">
         <div class="row">
             <div class="col-12 p-0">
-                <div class="topic-header-top img-fluid" :style="{ backgroundImage: `url(${topic.picture})` }">
+                <div class="topic-header-top" :style="{ backgroundImage: `url(${topic.picture})` }">
                     <i>
                         <h1 class="display-1 fw-bolder">{{ topic.name }}</h1>
                     </i>
@@ -14,15 +14,23 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row d-flex justify-content-center">
             <div class="col-12 d-flex justify-content-end p-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     New Discussion
                 </button>
             </div>
-            <div v-for="dis in discussion" :key="dis.id" class="col-10">
-                {{ dis }}
+            <div class="col-11  col-md-10 col-lg-9">
+                <div v-for="discussion in discussions" :key="discussion.id" class="discussions-card">
+                    <div class="discussion-header-top" :style="{ backgroundImage: `url(${discussion.picture})` }">
+                    </div>
+                    <div class="discussion-header-bot">
+                        <h2 class="text-center">{{ discussion.title }}</h2>
+                        <p>{{ discussion.description }}</p>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
     <!-- Button trigger modal -->
@@ -144,7 +152,7 @@ export default {
             editableDiscussionData,
             topic: computed(() => AppState.activeTopic),
             topicTags: computed(() => AppState.activeTopicTags),
-            discussion: computed(() => AppState.activeDiscussions),
+            discussions: computed(() => AppState.activeDiscussions),
 
             async createDiscussion(disData) {
                 try {
@@ -168,24 +176,54 @@ export default {
 
 .topic-header-top {
     padding: 0px;
-    height: 30vh;
+    height: 30vw;
     width: 100%;
-    object-fit: cover;
-    object-position: center;
+    background-size: cover;
+    background-position: center;
     box-shadow: inset 0px 0px 10px 4px black;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: top;
+    color: black;
+    text-shadow: 0px 0px 15px white;
 }
 
 .topic-header-bot {
     padding: 20px;
-    height: 20vh;
     width: 100%;
-    // box-shadow: inset 0px 0px 10px 4px black;
     display: flex;
-    background-color: white;
     font-weight: bold;
     font-size: large;
+    box-shadow: 0px 5px 10px white;
+    color: white;
+}
+
+.discussions-card {
+    width: 100%;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+    // border-bottom-right-radius: 30px;
+    // border-bottom-left-radius: 30px;
+    box-shadow: 0px 0px 10px white;
+
+
+
+}
+
+.discussion-header-top {
+    height: 30vw;
+    width: 100%;
+    background-position: center, top;
+    background-size: cover;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+}
+
+.discussion-header-bot {
+    box-shadow: 0px 5px 10px white;
+    color: white;
+    padding: 10px;
 }
 </style>

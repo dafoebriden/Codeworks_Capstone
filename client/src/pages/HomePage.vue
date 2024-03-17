@@ -84,14 +84,14 @@ export default {
         Pop.error(error)
       }
     }
-    async function getTopicTagsForTopic() {
-      try {
-        const topicTags = await topicsService.getTopicTagsForTopic()
-        return topicTags
-      } catch (error) {
-        Pop.error(error)
-      }
-    }
+    // async function getTopicTagsForTopic() {
+    //   try {
+    //     const topicTags = await topicsService.getTopicTagsForTopic()
+    //     return topicTags
+    //   } catch (error) {
+    //     Pop.error(error)
+    //   }
+    // }
     return {
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),
