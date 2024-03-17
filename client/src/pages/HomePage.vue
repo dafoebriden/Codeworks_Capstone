@@ -26,15 +26,27 @@
           </div>
         </div>
       </div>
+
       <div class="col-11 col-lg-10 main-page">
         <div class="row d-flex justify-content-evenly">
+          <div class="col-12 text-end">
+            <button type="button" class="bar-tag bg-success" data-bs-toggle="modal" data-bs-target="#newTopic">
+              New Topic
+            </button>
+          </div>
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
             <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }"></div>
             <div class="topic-card-bot">
               <div class="ms-3">
-                <h1 class="mb-0">{{ topic.name }}</h1>
+                <h1 class="mb-0">{{ topic.title }}</h1>
                 <p>{{ topic.quote }}</p>
+              </div>
+              <div v-if="account.id == topic.creatorId" class=" text-end">
+                <button @click="deleteTopic(topic.id)" class="bar-tag bg-dark m-2">Edit
+                </button>
+                <button @click="deleteTopic(topic.id)" class="bar-tag bg-danger m-2">Delete
+                </button>
               </div>
             </div>
           </div>
@@ -42,19 +54,73 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="newTopic" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="newTopicLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="newTopicLabel">New Topic</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="createTopic(topicData)">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Title</label>
+              <input v-model="topicData.title" type="text" class="form-control invalid" name="title" id="title"
+                minlength="2" maxlength="25" required>
+              <div id="nameFeedback" class="invalid-feedback">
+                Please choose a title.
+              </div>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="name" class="form-label">Picture</label>
+              <input v-model="topicData.picture" type="text" class="form-control invalid" id="picture" name="picture"
+                minlength="5" maxlength="1000" required>
+              <div id="nameFeedback" class="invalid-feedback">
+                Please choose a picture.
+              </div>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="quote" class="form-label">Quote</label>
+              <textarea v-model="topicData.quote" type="text" class="form-control invalid" id="quote" name="quote"
+                aria-describedby="quoteFeedback" minlength="15" maxlength="500" required></textarea>
+              <div id="quoteFeedback" class="invalid-feedback">
+                Please provide a quote.
+              </div>
+            </div>
+            <div class="d-flex justify-content-end pt-3">
+              <button class="btn btn-primary" type="submit">Create Topic</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { topicsService } from '../services/TopicsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+// import { discussionsService } from '../services/DiscussionsService';
 
 
 export default {
   setup() {
+    const topicData = ref({ title: '', picture: '', quote: '' })
+    // const route = useRoute()
     const router = useRouter()
     onMounted(() => {
       getTopics()
@@ -70,7 +136,7 @@ export default {
     async function getTopics() {
       try {
         const topics = await topicsService.getTopics()
-        getTopicTagsForTopic()
+        // getTopicTagsForTopic()
         return topics
       } catch (error) {
         Pop.error
@@ -93,9 +159,38 @@ export default {
     //   }
     // }
     return {
+      account: computed(() => AppState.account),
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),
-      getTopic
+      getTopic,
+      topicData,
+      async createTopic(topicData) {
+        try {
+          const topic = await topicsService.createTopic(topicData)
+          return topic
+        } catch (error) {
+          Pop.error(error)
+        }
+      },
+      async deleteTopic(id) {
+        try {
+          await topicsService.deleteTopic(id)
+        } catch (error) {
+          Pop.error(error)
+        }
+      }
+      async createTag() {
+
+      }
+      // async createDiscussion(disData) {
+      //           try {
+      //               disData.topicId = route.params.id
+      //               const dis = await discussionsService.createDiscussion(disData)
+      //               return dis
+      //           } catch (error) {
+      //               Pop.error(error)
+      //           }
+      //       }
     }
   }
 }

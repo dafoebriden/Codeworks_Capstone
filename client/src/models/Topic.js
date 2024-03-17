@@ -1,7 +1,7 @@
 export class Topic{
     constructor(data){
 this.id = data.id
-this.name = data.name
+this.title = data.title
 this.picture = data.picture
 this.quote = data.quote
 this.creatorId = data.creatorId

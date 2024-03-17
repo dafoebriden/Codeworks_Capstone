@@ -15,8 +15,9 @@
             </div>
         </div>
         <div class="row d-flex justify-content-center">
-            <div class="col-12 d-flex justify-content-end p-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <div class="col-12 d-flex justify-content-end pt-3 pe-3">
+                <button type="button" class="bar-tag bg-success" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">
                     New Discussion
                 </button>
             </div>
@@ -28,14 +29,17 @@
                         <h2 class="text-center">{{ discussion.title }}</h2>
                         <p>{{ discussion.description }}</p>
                     </div>
+                    <div v-if="account.id == discussion.creatorId" class=" text-end">
+                        <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
+                        </button>
+                        <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-danger m-2">Delete
+                        </button>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
-    <!-- Button trigger modal -->
-
-    <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -150,6 +154,7 @@ export default {
         }
         return {
             editableDiscussionData,
+            account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
             topicTags: computed(() => AppState.activeTopicTags),
             discussions: computed(() => AppState.activeDiscussions),
@@ -159,6 +164,13 @@ export default {
                     disData.topicId = route.params.id
                     const dis = await discussionsService.createDiscussion(disData)
                     return dis
+                } catch (error) {
+                    Pop.error(error)
+                }
+            },
+            async deleteDiscussion(id) {
+                try {
+                    await discussionsService.deleteDiscussion(id, route.params.id)
                 } catch (error) {
                     Pop.error(error)
                 }
@@ -225,5 +237,6 @@ export default {
     box-shadow: 0px 5px 10px white;
     color: white;
     padding: 10px;
+    margin-bottom: 20px;
 }
 </style>
