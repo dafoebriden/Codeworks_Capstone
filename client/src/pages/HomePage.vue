@@ -114,7 +114,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form @submit.prevent="createTopic()createTopicTag()">
+          <form @submit.prevent="createTopic(topicData)">
             <div class="col-md-5">
               <label for="name" class="form-label">Title</label>
               <input v-model="topicData.title" type="text" class="form-control invalid" name="title" id="title"
@@ -126,7 +126,7 @@
                 Looks good!
               </div>
             </div>
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
               <label for="type" class="form-label">Tag</label>
               <select v-model="topicTagData.id" class="form-select invalid" id="type" aria-describedby="typeFeedback"
                 required>
@@ -136,7 +136,7 @@
               <div id="typeFeedback" class="invalid-feedback">
                 Please select a valid tag.
               </div>
-            </div>
+            </div> -->
             <div class="col-md-12">
               <label for="name" class="form-label">Picture</label>
               <input v-model="topicData.picture" type="text" class="form-control invalid" id="picture" name="picture"
@@ -176,6 +176,7 @@ import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
 import { useRoute, useRouter } from 'vue-router';
+import { discussionsService } from '../services/DiscussionsService';
 // import { discussionsService } from '../services/DiscussionsService';
 
 
@@ -239,6 +240,7 @@ export default {
       async deleteTopic(id) {
         try {
           await topicsService.deleteTopic(id)
+          await discussionsService.deleteDiscussionsForTopic(id)
         } catch (error) {
           Pop.error(error)
         }

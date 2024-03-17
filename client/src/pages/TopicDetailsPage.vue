@@ -29,6 +29,10 @@
                         <h2 class="text-center">{{ discussion.title }}</h2>
                         <p>{{ discussion.description }}</p>
                     </div>
+                    <div v-if="account.id" class=" text-end">
+                        <button @click="createComment(discussion.id)" class="bar-tag bg-success m-2">Comment
+                        </button>
+                    </div>
                     <div v-if="account.id == discussion.creatorId" class=" text-end">
                         <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
                         </button>
@@ -108,6 +112,7 @@ import { AppState } from '../AppState';
 export default {
     setup() {
         const editableDiscussionData = { title: '', picture: '', description: '' }
+        const commentData = { picture: '', body: ''}
         const route = useRoute()
         onMounted(() =>
             getTopic(),
@@ -154,10 +159,12 @@ export default {
         }
         return {
             editableDiscussionData,
+            commentData,
             account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
             topicTags: computed(() => AppState.activeTopicTags),
             discussions: computed(() => AppState.activeDiscussions),
+            comments: computed(()=> AppState.comments),
 
             async createDiscussion(disData) {
                 try {
@@ -170,7 +177,15 @@ export default {
             },
             async deleteDiscussion(id) {
                 try {
-                    await discussionsService.deleteDiscussion(id, route.params.id)
+                    await discussionsService.deleteDiscussion(id)
+                } catch (error) {
+                    Pop.error(error)
+                }
+            },
+            async createComment(id, commentData){
+                try {
+                    const com = await commentsService.createComment(id, commentData)
+                    return com
                 } catch (error) {
                     Pop.error(error)
                 }

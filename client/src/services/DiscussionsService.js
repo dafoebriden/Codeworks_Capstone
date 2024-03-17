@@ -5,6 +5,7 @@ import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class DiscussionsService{
+
     async createDiscussion(disData) {
         try {
             if(!AppState.account.id){Pop.error('Please log in to create a discussion.') 
@@ -36,6 +37,14 @@ class DiscussionsService{
         } catch (error) {
             Pop.error(error)
         }
+    }    
+    async deleteDiscussionsForTopic(id) {
+        try {
+            await api.delete(`api/topic/${id}/discussions`) 
+        } catch (error) {
+            Pop.error(error)
+        }
+        
     }
     async getDiscussions(id) {
         try {

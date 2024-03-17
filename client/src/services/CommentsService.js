@@ -1,8 +1,18 @@
+import { AppState } from "../AppState"
 import { logger } from "../utils/Logger"
 import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class CommentsService{
+    async createComment(id, commentData) {
+        try {
+            const res = await api.post('api/comments', commentData)
+            logger.log('Created Comment', res.data)
+            AppState.comments.push(new Comment(res.data))
+        } catch (error) {
+            Pop.error(error)
+        }
+    }
     async getComments(id) {
         try {
             const res = await api.get(`api/discussions/${id}/comments`)
