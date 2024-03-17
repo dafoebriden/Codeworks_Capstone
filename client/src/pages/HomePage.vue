@@ -15,13 +15,21 @@
             </RouterLink>
           </div>
         </div>
+        <div class="text-end">
+          <button type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal" data-bs-target="#newTag"
+            style="max-width: 100px;">
+            New Tag
+          </button>
+        </div>
         <div class="d-flex flex-wrap">
           <div class="tag" v-for="tag in tags" :key="tag.id">
             <div class="tag-top">
               <p class="m-0">{{ tag.emoji }}</p>
             </div>
             <div class="tag-bot">
-              <p class="m-0">{{ tag.name }}</p>
+              <p class="m-0">{{ tag.name }}</p><button @click="deleteTag(tag.id)" class="bar-tag bg-danger m-2"
+                style="width: 25px; height: 15px;">
+              </button>
             </div>
           </div>
         </div>
@@ -54,6 +62,49 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="newTag" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="newTagLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="newTagLabel">New Tag</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="createTag(tagData)">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Title</label>
+              <input v-model="tagData.name" type="text" class="form-control invalid" name="title" id="title"
+                minlength="2" maxlength="25" required>
+              <div id="nameFeedback" class="invalid-feedback">
+                Please choose a title.
+              </div>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="name" class="form-label">Emoji</label>
+              <input v-model="tagData.emoji" type="text" class="form-control invalid" id="picture" name="picture"
+                minlength="0" maxlength="2" required>
+              <div id="nameFeedback" class="invalid-feedback">
+                Please choose a picture.
+              </div>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="d-flex justify-content-end pt-3">
+              <button class="btn btn-primary" type="submit">Create Tag</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="modal fade" id="newTopic" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="newTopicLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -63,8 +114,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form @submit.prevent="createTopic(topicData)">
-            <div class="col-md-6">
+          <form @submit.prevent="createTopic()createTopicTag()">
+            <div class="col-md-5">
               <label for="name" class="form-label">Title</label>
               <input v-model="topicData.title" type="text" class="form-control invalid" name="title" id="title"
                 minlength="2" maxlength="25" required>
@@ -73,6 +124,17 @@
               </div>
               <div class="valid-feedback">
                 Looks good!
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="type" class="form-label">Tag</label>
+              <select v-model="topicTagData.id" class="form-select invalid" id="type" aria-describedby="typeFeedback"
+                required>
+                <option selected disabled value="">Choose...</option>
+                <option v-for="tag in tags" :key="tag.id" :value="tag.id">{{ tag.name }}{{ tag.emoji }}</option>
+              </select>
+              <div id="typeFeedback" class="invalid-feedback">
+                Please select a valid tag.
               </div>
             </div>
             <div class="col-md-12">
@@ -119,6 +181,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 export default {
   setup() {
+    const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '' })
     // const route = useRoute()
     const router = useRouter()
@@ -164,6 +227,7 @@ export default {
       tags: computed(() => AppState.tags),
       getTopic,
       topicData,
+      tagData,
       async createTopic(topicData) {
         try {
           const topic = await topicsService.createTopic(topicData)
@@ -178,10 +242,22 @@ export default {
         } catch (error) {
           Pop.error(error)
         }
-      }
-      async createTag() {
-
-      }
+      },
+      async createTag(tagData) {
+        try {
+          const tag = await tagsService.createTag(tagData)
+          return tag
+        } catch (error) {
+          Pop.error(error)
+        }
+      },
+      async deleteTag(id) {
+        try {
+          await tagsService.deleteTag(id)
+        } catch (error) {
+          Pop.error(error)
+        }
+      },
       // async createDiscussion(disData) {
       //           try {
       //               disData.topicId = route.params.id
