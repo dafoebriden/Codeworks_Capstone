@@ -4,7 +4,7 @@
             <div class="col-12 p-0">
                 <div class="topic-header-top" :style="{ backgroundImage: `url(${topic.picture})` }">
                     <i>
-                        <h1 class="display-1 fw-bolder">{{ topic.name }}</h1>
+                        <h1 class="display-1 fw-bolder">{{ topic.title }}</h1>
                     </i>
                 </div>
                 <div class="topic-header-bot">
@@ -29,9 +29,36 @@
                         <h2 class="text-center">{{ discussion.title }}</h2>
                         <p>{{ discussion.description }}</p>
                     </div>
-                    <div v-if="account.id" class=" text-end">
-                        <button @click="createComment(discussion.id)" class="bar-tag bg-success m-2">Comment
-                        </button>
+                    <div v-if="account.id">
+                        <form @submit.prevent="createComment(discussion.id, commentData)"
+                            class="d-flex align-items-center">
+                            <div class="input-group">
+                                <textarea v-model="commentData.body" type="text" rows="1"
+                                    class="form-control invalid ms-2" id="body" aria-describedby="body"
+                                    placeholder=" Comment" required></textarea>
+                                <div class="input-group-text dropdown m-0 p-0" id="body">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        📸
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <div>
+                                            <input v-model="commentData.picture" type="text"
+                                                class="form-control invalid" id="name" minlength="5" maxlength="1000"
+                                                required>
+                                            <div id="nameFeedback" class="invalid-feedback">
+                                                Please choose a picture.
+                                            </div>
+                                            <div class="valid-feedback">
+                                                Looks good!
+                                            </div>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button @click="createComment(discussion.id)" class="bar-tag bg-success m-2">Comment
+                            </button>
+                        </form>
                     </div>
                     <div v-if="account.id == discussion.creatorId" class=" text-end">
                         <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
@@ -112,7 +139,7 @@ import { AppState } from '../AppState';
 export default {
     setup() {
         const editableDiscussionData = { title: '', picture: '', description: '' }
-        const commentData = { picture: '', body: ''}
+        const commentData = { picture: '', body: '' }
         const route = useRoute()
         onMounted(() =>
             getTopic(),
@@ -164,7 +191,7 @@ export default {
             topic: computed(() => AppState.activeTopic),
             topicTags: computed(() => AppState.activeTopicTags),
             discussions: computed(() => AppState.activeDiscussions),
-            comments: computed(()=> AppState.comments),
+            comments: computed(() => AppState.comments),
 
             async createDiscussion(disData) {
                 try {
@@ -182,7 +209,7 @@ export default {
                     Pop.error(error)
                 }
             },
-            async createComment(id, commentData){
+            async createComment(id, commentData) {
                 try {
                     const com = await commentsService.createComment(id, commentData)
                     return com
