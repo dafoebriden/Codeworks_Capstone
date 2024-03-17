@@ -12,13 +12,22 @@ export const AppState = reactive({
   /** @type {import('./models/Discussion.js').Discussion[]} */
   discussions: [],
   
-  /** @type {import('./models/Discussion.js').Discussion | null} */
-  activeDiscussions: null,
+  /** @type {import('./models/Discussion.js').Discussion | []} */
+  activeDiscussions: [],
+
+  /** @type {import('./models/TopicTag.js').TopicTag | []} */
+  topicTags: [],
+
+  /** @type {import('./models/TopicTag.js').TopicTag | []} */
+  activeTopicTags: [],
   
   /** @type {import('./models/Topic.js').Topic | null} */
   activeTopic: null,
 
   /** @type {import('./models/Tag.js').Tag[]} */
-  tags: []
+  tags: [],
+
+  /** @type {import('./models/Tag.js').Tag[]} */
+  activeTags: []
   
 })

@@ -12,7 +12,7 @@ class DiscussionsService{
         }
             const res = await api.post('api/discussions', disData)
             logger.log('Created Discussion', res.data)
-            AppState.activeDiscussions
+            AppState.activeDiscussions = res.data.map(d=> new Discussion(d))
             if(res.data.id){Pop.success('You just created a new discussion!')}
         } catch (error) {
         Pop.error(error)

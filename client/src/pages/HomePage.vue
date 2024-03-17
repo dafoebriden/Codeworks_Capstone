@@ -60,9 +60,17 @@ export default {
       getTopics()
       getTags()
     })
+    async function getTopic(id) {
+      try {
+        router.push(`topics/${id}`)
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
     async function getTopics() {
       try {
         const topics = await topicsService.getTopics()
+        getTopicTagsForTopic()
         return topics
       } catch (error) {
         Pop.error
@@ -76,14 +84,14 @@ export default {
         Pop.error(error)
       }
     }
-    async function getTopic(id) {
+    async function getTopicTagsForTopic() {
       try {
-        router.push(`topics/${id}`)
+        const topicTags = await topicsService.getTopicTagsForTopic()
+        return topicTags
       } catch (error) {
         Pop.error(error)
       }
     }
-
     return {
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),

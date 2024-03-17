@@ -5,6 +5,9 @@ import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class TagsService{
+    getTagsForTopic(id) {
+        throw new Error('Method not implemented.')
+    }
     getTag() {
     }
     async getTags(){

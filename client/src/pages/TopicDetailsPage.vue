@@ -13,13 +13,16 @@
                     </i>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-12 d-flex justify-content-end p-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     New Discussion
                 </button>
-
             </div>
-
+            <div v-for="dis in discussion" :key="dis.id" class="col-10">
+                {{ dis }}
+            </div>
         </div>
     </div>
     <!-- Button trigger modal -->
@@ -83,15 +86,16 @@
 <script>
 import { useRoute } from 'vue-router';
 import Pop from '../utils/Pop';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { discussionsService } from '../services/DiscussionsService';
 import { commentsService } from '../services/CommentsService';
 import { topicsService } from '../services/TopicsService';
 import { AppState } from '../AppState';
+// import { tagsService } from '../services/TagsService';
 
 export default {
     setup() {
-        const editableDiscussionData = ref({ title: '', picture: '', description: '' })
+        const editableDiscussionData = { title: '', picture: '', description: '' }
         const route = useRoute()
         onMounted(() =>
             getTopic(),
@@ -101,7 +105,7 @@ export default {
             try {
 
                 const topic = await topicsService.getTopic(route.params.id)
-                getTopicTags()
+                getTopicTagsForTopic()
                 getDiscussions()
                 // getComments()
                 return topic
@@ -110,9 +114,9 @@ export default {
                 Pop.error(error)
             }
         }
-        async function getTopicTags() {
+        async function getTopicTagsForTopic() {
             try {
-                const topicTags = await topicsService.getTopicTags(route.params.id)
+                const topicTags = await topicsService.getTopicTagsForTopic(route.params.id)
                 return topicTags
             } catch (error) {
                 Pop.error(error)
@@ -139,6 +143,8 @@ export default {
         return {
             editableDiscussionData,
             topic: computed(() => AppState.activeTopic),
+            topicTags: computed(() => AppState.activeTopicTags),
+            discussion: computed(() => AppState.activeDiscussions),
 
             async createDiscussion(disData) {
                 try {
@@ -164,7 +170,7 @@ export default {
     padding: 0px;
     height: 30vh;
     width: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     box-shadow: inset 0px 0px 10px 4px black;
     display: flex;
