@@ -4,7 +4,7 @@ import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class CommentsService{
-    async createComment(id, commentData) {
+    async createComment(commentData) {
         try {
             const res = await api.post('api/comments', commentData)
             logger.log('Created Comment', res.data)

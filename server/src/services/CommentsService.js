@@ -4,7 +4,6 @@ import { Forbidden } from "../utils/Errors.js"
 
 class CommentsService {
     async createComment(comData) {
-
         const com = await dbContext.Comments.create(comData)
         return com
     }
@@ -41,7 +40,7 @@ class CommentsService {
         const com = await this.getComment(id)
         if (!com) { throw new Error(`no comment with the Id: ${id}`) }
         if (com.creatorId != accountId) { throw new Forbidden(`That's not yours, give it back you thief!`) }
-        com.description = comData.description || com.description
+        com.body = comData.description || com.body
         com.picture = comData.picture || com.picture
         await com.save()
         return com

@@ -29,40 +29,51 @@
                         <h2 class="text-center">{{ discussion.title }}</h2>
                         <p>{{ discussion.description }}</p>
                     </div>
+                    <div>
+                        <div class="d-flex" v-for="comment in comments" :key="comment.id">
+                            <img class="rounded-circle img-fluid" :src="comment.creator.picture"
+                                style="height:10px; width: 10px;">
+                        </div>
+                    </div>
                     <div v-if="account.id">
                         <form @submit.prevent="createComment(discussion.id, commentData)"
                             class="d-flex align-items-center">
                             <div class="input-group">
                                 <textarea v-model="commentData.body" type="text" rows="1"
                                     class="form-control invalid ms-2" id="body" aria-describedby="body"
-                                    placeholder=" Comment" required></textarea>
-                                <div class="input-group-text dropdown m-0 p-0" id="body">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        📸
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <div>
-                                            <input v-model="commentData.picture" type="text"
-                                                class="form-control invalid" id="name" minlength="5" maxlength="1000"
-                                                required>
-                                            <div id="nameFeedback" class="invalid-feedback">
-                                                Please choose a picture.
+                                    placeholder=" Comment" required>
+                                </textarea>
+                                <span class="input-group-text m-0 p-0" id="body">
+                                    <div class="dropdown m-0 p-0">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            📸
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-start p-0">
+                                            <div>
+                                                <input v-model="commentData.picture" type="text"
+                                                    class="form-control invalid " id="picture" minlength="5"
+                                                    maxlength="1000" placeholder="url" style="width: 200px;">
+                                                <!-- <div id="pictureFeedback" class="invalid-feedback">
+                                                    Please choose a picture.
+                                                </div>
+                                                <div class="valid-feedback">
+                                                    Looks good!
+                                                </div> -->
                                             </div>
-                                            <div class="valid-feedback">
-                                                Looks good!
-                                            </div>
-                                        </div>
-                                    </ul>
-                                </div>
+                                        </ul>
+                                    </div>
+                                </span>
                             </div>
-                            <button @click="createComment(discussion.id)" class="bar-tag bg-success m-2">Comment
+                            <button type="submit" class="bar-tag bg-success m-2">Comment
                             </button>
                         </form>
                     </div>
                     <div v-if="account.id == discussion.creatorId" class=" text-end">
-                        <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
-                        </button>
+
+                        <!-- TODO -->
+                        <!-- <button @click="editDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
+                        </button> -->
                         <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-danger m-2">Delete
                         </button>
                     </div>
@@ -85,32 +96,32 @@
                             <label for="name" class="form-label">Title</label>
                             <input v-model="editableDiscussionData.title" type="text" class="form-control invalid"
                                 id="name" minlength="2" maxlength="25" required>
-                            <div id="nameFeedback" class="invalid-feedback">
+                            <!-- <div id="nameFeedback" class="invalid-feedback">
                                 Please choose a title.
                             </div>
                             <div class="valid-feedback">
                                 Looks good!
-                            </div>
+                            </div> -->
                         </div>
                         <div class="col-md-12">
                             <label for="name" class="form-label">Picture</label>
                             <input v-model="editableDiscussionData.picture" type="text" class="form-control invalid"
                                 id="name" minlength="5" maxlength="1000" required>
-                            <div id="nameFeedback" class="invalid-feedback">
+                            <!-- <div id="nameFeedback" class="invalid-feedback">
                                 Please choose a picture.
                             </div>
                             <div class="valid-feedback">
                                 Looks good!
-                            </div>
+                            </div> -->
                         </div>
                         <div class="col-md-12">
                             <label for="description" class="form-label">Description</label>
                             <textarea v-model="editableDiscussionData.description" type="text"
                                 class="form-control invalid" id="description" aria-describedby="descriptionFeedback"
                                 required></textarea>
-                            <div id="descriptionFeedback" class="invalid-feedback">
+                            <!-- <div id="descriptionFeedback" class="invalid-feedback">
                                 Please provide a description.
-                            </div>
+                            </div> -->
                         </div>
                         <div class="d-flex justify-content-end pt-3">
                             <button class="btn btn-primary" type="submit">Create Discussion</button>
@@ -139,21 +150,18 @@ import { AppState } from '../AppState';
 export default {
     setup() {
         const editableDiscussionData = { title: '', picture: '', description: '' }
-        const commentData = { picture: '', body: '' }
+        const commentData = { picture: '', body: '', discussionId: '' }
         const route = useRoute()
         onMounted(() =>
             getTopic(),
-            // getComments()
         )
         async function getTopic() {
             try {
-
                 const topic = await topicsService.getTopic(route.params.id)
                 getTopicTagsForTopic()
                 getDiscussions()
-                // getComments()
+                getComments()
                 return topic
-
             } catch (error) {
                 Pop.error(error)
             }
@@ -211,7 +219,8 @@ export default {
             },
             async createComment(id, commentData) {
                 try {
-                    const com = await commentsService.createComment(id, commentData)
+                    commentData.discussionId = id
+                    const com = await commentsService.createComment(commentData)
                     return com
                 } catch (error) {
                     Pop.error(error)
