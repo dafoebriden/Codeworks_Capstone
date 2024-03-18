@@ -15,7 +15,7 @@ class CommentsService{
     }
     async getComments(id) {
         try {
-            const res = await api.get(`api/discussions/${id}/comments`)
+            const res = await api.get(`api/topics/${id}/discussions/comments`)
             logger.log('Got Comments:', res.data)
         } catch (error) {
             Pop.error(error)

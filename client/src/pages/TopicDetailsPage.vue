@@ -31,8 +31,11 @@
                     </div>
                     <div>
                         <div class="d-flex" v-for="comment in comments" :key="comment.id">
-                            <img class="rounded-circle img-fluid" :src="comment.creator.picture"
-                                style="height:10px; width: 10px;">
+                            <div v-if="comment.discussionId == discussion.id">
+                                <img class="rounded-circle img-fluid" :src="comment.creator.picture"
+                                    style="height:10px; width: 10px;">
+                            </div>
+
                         </div>
                     </div>
                     <div v-if="account.id">
@@ -183,10 +186,9 @@ export default {
                 Pop.error(error)
             }
         }
-        async function getComments(discussionId) {
+        async function getComments() {
             try {
-
-                const com = await commentsService.getComments(discussionId)
+                const com = await commentsService.getComments(route.params.id)
                 return com
             } catch (error) {
                 Pop.error(error)

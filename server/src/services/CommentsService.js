@@ -3,6 +3,14 @@ import { CommentQuery } from "../models/Comment.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class CommentsService {
+    async getAllCommentsForTopic(topicId) {
+        const dis = await dbContext.Discussions.find({ topicId })
+        const comments = await dis.forEach(dis => {
+            let discussionId = dis.id
+            return dbContext.Comments.find({ discussionId })
+        })
+        return comments
+    }
     async createComment(comData) {
         const com = await dbContext.Comments.create(comData)
         return com

@@ -3,6 +3,7 @@ import BaseController from "../utils/BaseController.js";
 import { topicsService } from "../services/TopicsService.js";
 import { topicTagsService } from "../services/TopicTagsService.js";
 import { discussionsService } from "../services/DiscussionsService.js";
+import { commentsService } from "../services/CommentsService.js";
 
 export class TopicsController extends BaseController {
     constructor() {
@@ -12,6 +13,7 @@ export class TopicsController extends BaseController {
             .get('/:id', this.getTopic)
             .get('/:id/topicTags', this.getTopicTagsByTopic)
             .get('/:id/discussions', this.getDiscussionsForTopic)
+            .get('/:id/discussions/comments', this.getAllCommentsForTopic)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTopic)
             .put('/:id', this.editTopic)
@@ -46,6 +48,14 @@ export class TopicsController extends BaseController {
         try {
             const dis = await discussionsService.getDiscussionsForTopic(req.params.id)
             res.send(dis)
+        } catch (error) {
+            next(error)
+        }
+    }
+    async getAllCommentsForTopic(req, res, next) {
+        try {
+            const comments = await commentsService.getAllCommentsForTopic(req.params.id)
+            res.send(comments)
         } catch (error) {
             next(error)
         }
