@@ -6,7 +6,7 @@ class CommentsService {
     async getAllCommentsForTopic(topicId) {
         const dis = await dbContext.Discussions.find({ topicId })
         const comments = await dis.forEach(dis => {
-            let discussionId = dis.id
+            let discussionId = dis._id
             return dbContext.Comments.find({ discussionId })
         })
         return comments

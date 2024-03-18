@@ -1,8 +1,11 @@
 import { dbContext } from "../db/DbContext.js"
 
 class TopicTagsService {
-    async createTopicTag(data) {
-        const topicTag = await dbContext.TopicTags.create(data)
+    async createTopicTag(topicId, tagIds) {
+        const dataArray = tagIds.map(tagId => {
+            return { topicId: topicId, tagId: tagId }
+        })
+        const topicTag = await dbContext.TopicTags.create(dataArray)
         return topicTag
     }
     // NOTE getting all the tags that are related to a topic

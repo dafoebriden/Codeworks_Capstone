@@ -1,6 +1,7 @@
 <template>
   <div class="container-fluid my-2">
     <div class="row height small-screen">
+      <!-- NOTE Side-Bar -->
       <div class="col-11 col-lg-2 bar p-0 d-flex flex-column">
         <div class="d-flex flex-column justify-content-end mb-3 line-bottom">
           <div class="d-flex">
@@ -21,7 +22,8 @@
             New Tag
           </button>
         </div>
-        <div class="d-flex flex-wrap">
+        <!-- NOTE Tags -->
+        <div class="d-flex flex-wrap justify-content-evenly">
           <div class="tag" v-for="tag in tags" :key="tag.id">
             <div class="tag-top">
               <p class="m-0">{{ tag.emoji }}</p>
@@ -34,7 +36,7 @@
           </div>
         </div>
       </div>
-
+      <!-- NOTE Main Page -->
       <div class="col-11 col-lg-10 main-page">
         <div class="row d-flex justify-content-evenly">
           <div class="col-12 text-end">
@@ -42,6 +44,7 @@
               New Topic
             </button>
           </div>
+          <!-- NOTE Topics -->
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
             <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }"></div>
@@ -51,8 +54,8 @@
                 <p>{{ topic.quote }}</p>
               </div>
               <div v-if="account.id == topic.creatorId" class=" text-end">
-                <button @click="deleteTopic(topic.id)" class="bar-tag bg-dark m-2">Edit
-                </button>
+                <!-- TODO create edit function and form for topics -->
+                <!-- <button @click="editTopic(topic.id)" class="bar-tag bg-dark m-2">Edit</button> -->
                 <button @click="deleteTopic(topic.id)" class="bar-tag bg-danger m-2">Delete
                 </button>
               </div>
@@ -62,6 +65,7 @@
       </div>
     </div>
   </div>
+  <!-- NOTE Create Tag Form -->
   <div class="modal fade" id="newTag" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="newTagLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -75,24 +79,24 @@
             <div class="col-md-6">
               <label for="name" class="form-label">Title</label>
               <input v-model="tagData.name" type="text" class="form-control invalid" name="title" id="title"
-                minlength="2" maxlength="25" required>
-              <div id="nameFeedback" class="invalid-feedback">
+                minlength="1" maxlength="25" required>
+              <!-- <div id="nameFeedback" class="invalid-feedback">
                 Please choose a title.
               </div>
               <div class="valid-feedback">
                 Looks good!
-              </div>
+              </div> -->
             </div>
             <div class="col-md-12">
               <label for="name" class="form-label">Emoji</label>
               <input v-model="tagData.emoji" type="text" class="form-control invalid" id="picture" name="picture"
                 minlength="0" maxlength="2" required>
-              <div id="nameFeedback" class="invalid-feedback">
+              <!-- <div id="nameFeedback" class="invalid-feedback">
                 Please choose a picture.
               </div>
               <div class="valid-feedback">
                 Looks good!
-              </div>
+              </div> -->
             </div>
             <div class="d-flex justify-content-end pt-3">
               <button class="btn btn-primary" type="submit">Create Tag</button>
@@ -105,6 +109,7 @@
       </div>
     </div>
   </div>
+  <!-- NOTE Create Topic Form -->
   <div class="modal fade" id="newTopic" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="newTopicLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -115,46 +120,55 @@
         </div>
         <div class="modal-body">
           <form @submit.prevent="createTopic(topicData)">
-            <div class="col-md-5">
-              <label for="name" class="form-label">Title</label>
-              <input v-model="topicData.title" type="text" class="form-control invalid" name="title" id="title"
-                minlength="2" maxlength="25" required>
-              <div id="nameFeedback" class="invalid-feedback">
-                Please choose a title.
+
+            <div class="d-flex align-items-center mb-2">
+              <div class="col-md-5">
+                <label for="name" class="form-label fw-bold">Title</label>
+                <input v-model="topicData.title" type="text" class="form-control invalid" name="title" id="title"
+                  minlength="2" maxlength="25" required>
               </div>
-              <div class="valid-feedback">
-                Looks good!
+              <div class="d-flex">
+                <div @click="removeTag(tag.id)" class="ms-4 form-tag selectable" role="button" v-for="tag in activeTags"
+                  :key="tag.id">
+                  <p class="form-tag-top m-0">{{ tag.emoji }}</p>
+                  <p class="form-tag-bot m-0">{{ tag.name }}</p>
+                </div>
               </div>
             </div>
-            <!-- <div class="col-md-2">
-              <label for="type" class="form-label">Tag</label>
-              <select v-model="topicTagData.id" class="form-select invalid" id="type" aria-describedby="typeFeedback"
-                required>
-                <option selected disabled value="">Choose...</option>
-                <option v-for="tag in tags" :key="tag.id" :value="tag.id">{{ tag.name }}{{ tag.emoji }}</option>
-              </select>
-              <div id="typeFeedback" class="invalid-feedback">
-                Please select a valid tag.
+            <!-- NOTE Topic Tag Data -->
+            <div class="d-flex mb-2">
+              <div class="col-md-3">
+                <div class="dropdown">
+                  <button class="form-control dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Add Tags
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a @click="addTag(tag.id)" v-for="tag in tags" :key="tag.id" class="dropdown-item" href="#">{{
+              tag.name }}{{ tag.emoji }}</a></li>
+                  </ul>
+                </div>
               </div>
-            </div> -->
+
+            </div>
             <div class="col-md-12">
-              <label for="name" class="form-label">Picture</label>
+              <label for="name" class="form-label fw-bold">Picture</label>
               <input v-model="topicData.picture" type="text" class="form-control invalid" id="picture" name="picture"
                 minlength="5" maxlength="1000" required>
-              <div id="nameFeedback" class="invalid-feedback">
+              <!-- <div id="nameFeedback" class="invalid-feedback">
                 Please choose a picture.
               </div>
               <div class="valid-feedback">
                 Looks good!
-              </div>
+              </div> -->
             </div>
             <div class="col-md-12">
-              <label for="quote" class="form-label">Quote</label>
+              <label for="quote" class="form-label fw-bold">Quote</label>
               <textarea v-model="topicData.quote" type="text" class="form-control invalid" id="quote" name="quote"
                 aria-describedby="quoteFeedback" minlength="15" maxlength="500" required></textarea>
-              <div id="quoteFeedback" class="invalid-feedback">
+              <!-- <div id="quoteFeedback" class="invalid-feedback">
                 Please provide a quote.
-              </div>
+              </div> -->
             </div>
             <div class="d-flex justify-content-end pt-3">
               <button class="btn btn-primary" type="submit">Create Topic</button>
@@ -177,13 +191,14 @@ import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
 import { useRoute, useRouter } from 'vue-router';
 import { discussionsService } from '../services/DiscussionsService';
+import { logger } from '../utils/Logger';
 // import { discussionsService } from '../services/DiscussionsService';
 
 
 export default {
   setup() {
     const tagData = ref({ name: '', emoji: '' })
-    const topicData = ref({ title: '', picture: '', quote: '' })
+    const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     // const route = useRoute()
     const router = useRouter()
     onMounted(() => {
@@ -226,6 +241,7 @@ export default {
       account: computed(() => AppState.account),
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),
+      activeTags: computed(() => AppState.activeTags),
       getTopic,
       topicData,
       tagData,
@@ -240,7 +256,7 @@ export default {
       async deleteTopic(id) {
         try {
           await topicsService.deleteTopic(id)
-          await discussionsService.deleteDiscussionsForTopic(id)
+          // await discussionsService.deleteDiscussionsForTopic(id)
         } catch (error) {
           Pop.error(error)
         }
@@ -260,6 +276,27 @@ export default {
           Pop.error(error)
         }
       },
+      addTag(id) {
+
+        AppState.activeTags.map(tag => {
+          if (tag.id == id) {
+            Pop.error('You can only pick a tag once.')
+            return
+          }
+        })
+        if (AppState.activeTags.length == 3) {
+          Pop.error('You can only pick up to three tags.')
+          return
+        }
+        topicData.value.tagIds.push(id)
+        logger.log(topicData.value.tagIds)
+        AppState.activeTags.push(AppState.tags.find(tag => tag.id == id))
+      },
+      removeTag(id) {
+        let tagIndex = AppState.activeTags.findIndex(tag => tag.id == id)
+        AppState.activeTags.splice(tagIndex, 1)
+        logger.log(topicData.value.tagIds)
+      }
       // async createDiscussion(disData) {
       //           try {
       //               disData.topicId = route.params.id
@@ -272,6 +309,61 @@ export default {
     }
   }
 }
+// const typeahead = {
+//   selectedIndex: -1, init: function () {
+//     this.input = document.getElementById("typeahead");
+//     if (!this.input) return;
+//     this.resultHolder = document.getElementById("typeahead-results");
+//     this.input.addEventListener("input", this.handleInput.bind(this));
+//     this.input.addEventListener("keydown", this.handleKeydown.bind(this));
+//   },
+//   handleInput: function () {
+//     this.clearResults();
+//     const { value } = this.input; if (value.length < 1) return;
+//     const strongMatch = new RegExp("^" + value, "i");
+//     const weakMatch = new RegExp(value, "i");
+//     const results = AppState.tags.filter(recipe => weakMatch.test(recipe.name)).sort((a, b) => {
+//       if (strongMatch.test(a.name) && !strongMatch.test(b.name)) return -1;
+//       if (!strongMatch.test(a.name) && strongMatch.test(b.name)) return 1;
+//       return a.name < b.name ? -1 : 1;
+//     });
+//     for (const recipe of results) {
+//       const item = document.createElement("li");
+//       const matchedText = weakMatch.exec(recipe.name)[0];
+//       item.innerHTML = recipe.name.replace(matchedText, "<strong>" + matchedText + "</strong>");
+//       item.dataset.permalink = recipe.permalink;
+//       this.resultHolder.appendChild(item);
+//       item.addEventListener("click", this.handleClick);
+//     }
+//   },
+//   handleClick: function () {
+//     window.location.href = this.dataset.permalink;
+//   },
+//   getResults: function () {
+//     return this.resultHolder.children;
+//   },
+//   clearResults: function () {
+//     this.selectedIndex = -1;
+//     while (this.resultHolder.firstChild) {
+//       this.resultHolder.removeChild(this.resultHolder.firstChild);
+//     }
+//   },
+//   handleKeydown: function (event) {
+//     const { keyCode } = event;
+//     const results = this.getResults();
+//     if (keyCode === 40 && this.selectedIndex < results.length - 1) { this.selectedIndex++; }
+//     else if (keyCode === 38 && this.selectedIndex >= 0) { this.selectedIndex--; }
+//     else if (keyCode === 13 && results[this.selectedIndex]) { window.location.href = results[this.selectedIndex].dataset.permalink; }
+//     for (let i = 0; i < results.length; i++) {
+//       const result = results[i]; const selectedClass = "selected";
+//       if (i === this.selectedIndex) { result.classList.add(selectedClass); }
+//       else if (result.classList.contains(selectedClass)) {
+//         result.classList.remove(selectedClass);
+//       }
+//     }
+//   }
+// };
+// typeahead.init();
 </script>
 
 <style scoped lang="scss">
@@ -285,6 +377,7 @@ export default {
   margin-bottom: 16px;
   text-align: center;
 }
+
 
 .tag-top {
   background-color: black;
@@ -306,6 +399,37 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+.form-tag {
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px black;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.form-tag-top {
+  background-color: black;
+  color: white;
+  height: 65%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: xx-large;
+}
+
+.form-tag-bot {
+  background-color: white;
+  color: black;
+  height: 30%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .topic-card {
   width: 300px;
@@ -342,4 +466,37 @@ export default {
   overflow: hidden;
   // box-shadow: inset 0px 0px 15px 0px white;
 }
-</style>
+
+
+
+
+
+// .typeahead {
+//   position: relative;
+// }
+
+// #typeahead-results {
+//   list-style: none;
+//   position: absolute;
+//   top: 4.5em;
+//   left: 0;
+//   background-color: darkblue;
+//   width: 250px;
+//   margin: 0 0.5em;
+//   padding: 0;
+
+//   &:empty {
+//     display: none;
+//   }
+
+//   @mixin selected {
+//     background-color: darkblue;
+//     color: white;
+//   }
+
+//   li {
+//     border-bottom: 2px solid black;
+//     cursor: pointer;
+//     padding: 1em;
+//   }
+// }</style>

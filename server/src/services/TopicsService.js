@@ -47,14 +47,14 @@ class TopicsService {
         const topic = await this.getTopic(id)
         if (!topic) { throw new Error(`Can't find Tag: ${topic.title}`) }
         if (accountId != topic.creatorId) { throw new Forbidden('Thats not yours!') }
-        let topicId = topic.id
         // NOTE finding all the discussions related to the topic
-        const dis = await dbContext.Discussions.find({ topicId })
-        dis.forEach(dis => {
-            let discussionId = dis.id
-            dbContext.Comments.findByIdAndDelete({ discussionId })
-        })
-        await dbContext.Discussions.findByIdAndDelete({ topicId })
+        // let topicId = topic.id
+        // const dis = await dbContext.Discussions.find({ topicId })
+        // dis.forEach(dis => {
+        //     let discussionId = dis.id
+        //     dbContext.Comments.findByIdAndDelete({ discussionId })
+        // })
+        // await dbContext.Discussions.findByIdAndDelete({ topicId })
         await dbContext.Topics.findByIdAndDelete(topic.id)
         return `Deleted Topic: ${topic.title}`
     }

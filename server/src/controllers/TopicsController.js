@@ -23,7 +23,8 @@ export class TopicsController extends BaseController {
         try {
             req.body.creatorId = req.userInfo.id
             const topic = await topicsService.createTopic(req.body)
-            res.send(topic)
+            const topicTags = await topicTagsService.createTopicTag(topic.id, req.body.tagIds)
+            res.send(topic, topicTags)
         } catch (error) {
             next(error)
         }
