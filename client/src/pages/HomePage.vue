@@ -17,8 +17,8 @@
           </div>
         </div>
         <div class="text-end">
-          <button type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal" data-bs-target="#newTag"
-            style="max-width: 100px;">
+          <button v-if="account.id" type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal"
+            data-bs-target="#newTag" style="max-width: 100px;">
             New Tag
           </button>
         </div>
@@ -40,15 +40,23 @@
       <div class="col-11 col-lg-10 main-page">
         <div class="row d-flex justify-content-evenly">
           <div class="col-12 text-end">
-            <button @click="getTopicFormTags()" type="button" class="bar-tag bg-success" data-bs-toggle="modal"
-              data-bs-target="#newTopic">
+            <button v-if="account.id" @click="getTopicFormTags()" type="button" class="bar-tag bg-success"
+              data-bs-toggle="modal" data-bs-target="#newTopic">
               New Topic
             </button>
           </div>
           <!-- NOTE Topics -->
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
-            <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }"></div>
+            <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }">
+              <div class="d-flex">
+                <div class="m-2 topic-tag" v-for="topicTag in topic.topicTags" :key="topicTag.id">
+                  <div>
+                    <p class="topic-tag-top m-0">{{ topicTag.tag.emoji }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="topic-card-bot">
               <div class="ms-3">
                 <h1 class="mb-0">{{ topic.title }}</h1>
@@ -216,7 +224,6 @@ export default {
     async function getTopics() {
       try {
         const topics = await topicsService.getTopics()
-        // getTopicTagsForTopic()
         return topics
       } catch (error) {
         Pop.error
@@ -391,7 +398,6 @@ export default {
   text-align: center;
 }
 
-
 .tag-top {
   background-color: black;
   color: white;
@@ -443,6 +449,18 @@ export default {
   align-items: center;
 }
 
+.topic-tag {
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px black;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  font-weight: bold;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  font-size: large;
+}
 
 .topic-card {
   width: 300px;

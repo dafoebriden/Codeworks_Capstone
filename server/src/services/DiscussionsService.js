@@ -5,6 +5,13 @@ import { Forbidden } from "../utils/Errors.js"
 class DiscussionsService {
     async getDiscussionsForTopic(topicId) {
         const dis = await dbContext.Discussions.find({ topicId })
+            .populate('creator')
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'creator'
+                }
+            })
         return dis
     }
     async getDiscussions(query) {
@@ -18,7 +25,13 @@ class DiscussionsService {
             .skip(skipNumber)
             // .sort({ fireCount: 'decending' })
             .populate('creator')
-            .populate('comments', 'creator body')
+            .populate({
+                path: 'comments',
+                options: { limit: 1 },
+                populate: {
+                    path: 'creator'
+                }
+            })
 
         const disCount = await dbContext.Discussions.countDocuments(disQuery)
         const responseObject = {
@@ -30,7 +43,7 @@ class DiscussionsService {
         return responseObject
     }
     async getDiscussion(id) {
-        const dis = await dbContext.Discussions.findById(id)
+        const dis = await dbContext.Discussions.findById(id).populate('creator').populate('comments', 'creator body')
         return dis
     }
     async createDiscussion(disData) {

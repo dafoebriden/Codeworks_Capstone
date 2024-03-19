@@ -3,14 +3,14 @@ import { CommentQuery } from "../models/Comment.js"
 import { Forbidden } from "../utils/Errors.js"
 
 class CommentsService {
-    async getAllCommentsForTopic(topicId) {
-        const dis = await dbContext.Discussions.find({ topicId })
-        const comments = await dis.forEach(dis => {
-            let discussionId = dis._id
-            return dbContext.Comments.find({ discussionId })
-        })
-        return comments
-    }
+    // async getAllCommentsForTopic(topicId) {
+    //     const dis = await dbContext.Discussions.find({ topicId })
+    //     const comments = await dis.forEach(dis => {
+    //         let discussionId = dis._id
+    //         return dbContext.Comments.find({ discussionId })
+    //     })
+    //     return comments
+    // }
     async createComment(comData) {
         const com = await dbContext.Comments.create(comData)
         return com
@@ -25,7 +25,7 @@ class CommentsService {
             .limit(commentLimit)
             .skip(skipNumber)
             .sort({ updatedAt: 'descending' })
-        // .populate('creator')
+            .populate('creator')
 
         const commentCount = await dbContext.Comments.countDocuments(commentQuery)
         const responseObject = {
@@ -37,11 +37,11 @@ class CommentsService {
         return responseObject
     }
     async getComment(id) {
-        const com = await dbContext.Comments.findById(id)
+        const com = await dbContext.Comments.findById(id).populate('creator')
         return com
     }
     async getCommentsForDiscussion(discussionId) {
-        const com = await dbContext.Comments.find({ discussionId })
+        const com = await dbContext.Comments.find({ discussionId }).populate('creator')
         return com
     }
     async editComment(comData, id, accountId) {

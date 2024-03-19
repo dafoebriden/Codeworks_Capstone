@@ -22,6 +22,6 @@ TopicTagsSchema.virtual('topic', {
 TopicTagsSchema.virtual('tag', {
     localField: 'tagId',
     foreignField: '_id',
-    justone: true,
+    justOne: true,
     ref: 'Tag'
 })

@@ -8,6 +8,7 @@ this.creatorId = data.creatorId
 this.createdAt = data.createdAt
 this.updatedAt = data.updatedAt
 this.creator = data.creator
+this.topicTags = data.topicTags
     }
 }
 

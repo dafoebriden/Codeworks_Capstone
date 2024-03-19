@@ -11,9 +11,8 @@ export class TopicsController extends BaseController {
         this.router
             .get('', this.getTopics)
             .get('/:id', this.getTopic)
-            .get('/:id/topicTags', this.getTopicTagsByTopic)
+            // .get('/:id/topicTags', this.getTopicTagsByTopic)
             .get('/:id/discussions', this.getDiscussionsForTopic)
-            .get('/:id/discussions/comments', this.getAllCommentsForTopic)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTopic)
             .put('/:id', this.editTopic)
@@ -53,23 +52,15 @@ export class TopicsController extends BaseController {
             next(error)
         }
     }
-    async getAllCommentsForTopic(req, res, next) {
-        try {
-            const comments = await commentsService.getAllCommentsForTopic(req.params.id)
-            res.send(comments)
-        } catch (error) {
-            next(error)
-        }
-    }
     // NOTE getting all the tags related to a topic
-    async getTopicTagsByTopic(req, res, next) {
-        try {
-            const topicTags = await topicTagsService.getTopicTagsByTopic(req.params.id)
-            res.send(topicTags)
-        } catch (error) {
-            next(error)
-        }
-    }
+    // async getTopicTagsByTopic(req, res, next) {
+    //     try {
+    //         const topicTags = await topicTagsService.getTopicTagsByTopic(req.params.id)
+    //         res.send(topicTags)
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
 
     async editTopic(req, res, next) {
         try {

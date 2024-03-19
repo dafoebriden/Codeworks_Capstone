@@ -13,7 +13,7 @@ class DiscussionsService{
         }
             const res = await api.post('api/discussions', disData)
             logger.log('Created Discussion', res.data)
-            AppState.activeDiscussions.push(new Discussion(res.data))
+            AppState.discussions.push(new Discussion(res.data))
             if(res.data.id){Pop.success('You just created a new discussion!')}
         } catch (error) {
         Pop.error(error)
@@ -31,8 +31,8 @@ class DiscussionsService{
                 }
                     const res = await api.delete(`api/discussions/${id}`)
                     logger.log('Deleted discussion:', res.data.title)
-                    const dis = AppState.activeDiscussions.findIndex(d=> d.id == id)
-                    AppState.activeDiscussions.splice(dis, 1)
+                    const dis = AppState.discussions.findIndex(d=> d.id == id)
+                    AppState.discussions.splice(dis, 1)
                 
         } catch (error) {
             Pop.error(error)
@@ -48,10 +48,10 @@ class DiscussionsService{
     }
     async getDiscussions(id) {
         try {
-            AppState.activeDiscussions = null
+            AppState.discussions = null
             const res = await api.get(`api/topics/${id}/discussions`)
             logger.log('Got discussions:', res.data)
-            AppState.activeDiscussions = res.data.map(d=> new Discussion(d))
+            AppState.discussions = res.data.map(d=> new Discussion(d))
         } catch (error) {
             Pop.error(error)
         }

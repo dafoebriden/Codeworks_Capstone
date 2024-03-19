@@ -7,10 +7,10 @@
                         <h1 class="display-1 fw-bolder">{{ topic.title }}</h1>
                     </i>
                     <div class="d-flex">
-                        <div class="m-3 form-tag" v-for="topicTag in topicTags" :key="topicTag.id">
-                            <div v-for="tag in topicTag.tag" :key="tag.id">
-                                <p class="form-tag-top m-0">{{ tag.emoji }}</p>
-                                <p class="form-tag-bot m-0">{{ tag.name }}</p>
+                        <div class="m-3 form-tag" v-for="topicTag in topic.topicTags" :key="topicTag.id">
+                            <div>
+                                <p class="form-tag-top m-0">{{ topicTag.tag.emoji }}</p>
+                                <p class="form-tag-bot m-0">{{ topicTag.tag.name }}</p>
                             </div>
 
                         </div>
@@ -25,7 +25,7 @@
         </div>
         <div class="row d-flex justify-content-center">
             <div class="col-12 d-flex justify-content-end pt-3 pe-3">
-                <button type="button" class="bar-tag bg-success" data-bs-toggle="modal"
+                <button v-if="account.id" type="button" class="bar-tag bg-success" data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop">
                     New Discussion
                 </button>
@@ -39,12 +39,18 @@
                         <p>{{ discussion.description }}</p>
                     </div>
                     <div>
-                        <div class="d-flex" v-for="comment in comments" :key="comment.id">
-                            <div v-if="comment.discussionId == discussion.id">
+                        <div class="d-flex align-items-center m-2" v-for="comment in discussion.comments"
+                            :key="comment.id">
+                            <div>
                                 <img class="rounded-circle img-fluid" :src="comment.creator.picture"
-                                    style="height:10px; width: 10px;">
+                                    style="height:25px; width: 25px;">
                             </div>
-
+                            <div class=" ms-2 comment-body d-flex flex-wrap">
+                                <p class="m-0">{{ comment.body }}</p>
+                                <div v-if="comment.picture" class="comment-picture">
+                                    <img class="img-fluid" :src="comment.picture">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div v-if="account.id">
@@ -81,7 +87,7 @@
                             </button>
                         </form>
                     </div>
-                    <div v-if="account.id == discussion.creatorId" class=" text-end">
+                    <div v-if="account.id == discussion.creatorId" class=" delete-dis text-end">
 
                         <!-- TODO -->
                         <!-- <button @click="editDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
@@ -170,24 +176,25 @@ export default {
         async function getTopic() {
             try {
                 const topic = await topicsService.getTopic(route.params.id)
+                getDiscussions()
                 return topic
             } catch (error) {
                 Pop.error(error)
             }
         }
+        async function getDiscussions() {
+            try {
+                const dis = await discussionsService.getDiscussions(route.params.id)
+                return dis
+            } catch (error) {
+                Pop.error(error)
+            }
+        }
+
         // async function getTopicTagsForTopic() {
         //     try {
         //         const topicTags = await topicsService.getTopicTagsForTopic(route.params.id)
         //         return topicTags
-        //     } catch (error) {
-        //         Pop.error(error)
-        //     }
-        // }
-
-        // async function getDiscussions() {
-        //     try {
-        //         const dis = await discussionsService.getDiscussions(route.params.id)
-        //         return dis
         //     } catch (error) {
         //         Pop.error(error)
         //     }
@@ -205,8 +212,7 @@ export default {
             commentData,
             account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
-            topicTags: computed(() => AppState.activeTopicTags),
-            discussions: computed(() => AppState.activeDiscussions),
+            discussions: computed(() => AppState.discussions),
             comments: computed(() => AppState.comments),
 
             async createDiscussion(disData) {
@@ -229,6 +235,14 @@ export default {
                 try {
                     commentData.discussionId = id
                     const com = await commentsService.createComment(commentData)
+                    return com
+                } catch (error) {
+                    Pop.error(error)
+                }
+            },
+            async getCommentsForDiscussion(id) {
+                try {
+                    const com = await commentsService.getCommentsForDiscussion(id)
                     return com
                 } catch (error) {
                     Pop.error(error)
@@ -265,7 +279,7 @@ export default {
     display: flex;
     font-weight: bold;
     font-size: large;
-    box-shadow: 0px 5px 10px white;
+    border-bottom: 1px solid white;
     color: white;
 }
 
@@ -273,11 +287,13 @@ export default {
     width: 100%;
     margin-top: 100px;
     margin-bottom: 100px;
+    padding-bottom: 20px;
     border-top-right-radius: 30px;
     border-top-left-radius: 30px;
-    // border-bottom-right-radius: 30px;
-    // border-bottom-left-radius: 30px;
-    box-shadow: 0px 0px 10px white;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    box-shadow: 0px 0px 50px -10px white;
+    border: 1px solid white;
 }
 
 .discussion-header-top {
@@ -290,7 +306,8 @@ export default {
 }
 
 .discussion-header-bot {
-    box-shadow: 0px 5px 10px white;
+    border-bottom: 1px solid white;
+    border-top: 1px solid white;
     color: white;
     padding: 10px;
     margin-bottom: 20px;
@@ -324,5 +341,28 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.comment-body {
+    border: 1px solid white;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    margin: 5px;
+}
+
+.comment-picture {
+    max-width: 400px;
+    max-height: 400px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid white;
+    contain: content;
+}
+
+.delete-dis {
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    margin-right: 10px;
 }
 </style>

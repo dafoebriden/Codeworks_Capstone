@@ -17,8 +17,14 @@ class TopicsService {
             .find(topicQuery)
             .limit(topicLimit)
             .skip(skipNumber)
-            .populate('topicTags')
-            .populate('discussions')
+            .populate({
+                path: 'topicTags',
+                populate: {
+                    path: 'tag',
+
+                },
+            })
+        // .populate('discussions')
         // .sort({ fireCount: 'decending' })
 
         const topicCount = await dbContext.Topics.countDocuments(topicQuery)
@@ -31,7 +37,14 @@ class TopicsService {
         return responseObject
     }
     async getTopic(id) {
-        const topic = (await dbContext.Topics.findById(id)).populate('topicTags')
+        const topic = await dbContext.Topics.findById(id)
+            .populate({
+                path: 'topicTags',
+                populate: {
+                    path: 'tag'
+                }
+            })
+            .populate('creator')
         return topic
     }
     async editTopic(topicData, id, accountId) {

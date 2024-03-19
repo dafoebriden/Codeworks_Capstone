@@ -65,7 +65,7 @@ footer {
   // color: black;
   // background-color: white;
   background-color: rgba(255, 255, 255, .4);
-  box-shadow: inset 0px 0px 10px 2px black, inset 0px 0px 40px 0px black, 0px 0px 50px -1px rgba(255, 255, 255, .4);
+  box-shadow: inset 0px 0px 10px 2px black, inset 0px 0px 40px 0px black, 0px 0px 50px -1px rgba(255, 255, 255, .8);
   align-items: center;
 }
 
