@@ -40,7 +40,8 @@
       <div class="col-11 col-lg-10 main-page">
         <div class="row d-flex justify-content-evenly">
           <div class="col-12 text-end">
-            <button type="button" class="bar-tag bg-success" data-bs-toggle="modal" data-bs-target="#newTopic">
+            <button @click="getTopicFormTags()" type="button" class="bar-tag bg-success" data-bs-toggle="modal"
+              data-bs-target="#newTopic">
               New Topic
             </button>
           </div>
@@ -242,6 +243,7 @@ export default {
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),
       activeTags: computed(() => AppState.activeTags),
+      topicFormTags: computed(() => AppState.topicFormTags),
       getTopic,
       topicData,
       tagData,
@@ -288,15 +290,26 @@ export default {
           Pop.error('You can only pick up to three tags.')
           return
         }
-        topicData.value.tagIds.push(id)
-        logger.log(topicData.value.tagIds)
-        AppState.activeTags.push(AppState.tags.find(tag => tag.id == id))
+        else {
+          topicData.value.tagIds.push(id)
+          AppState.activeTags.push(AppState.tags.find(tag => tag.id == id))
+          // AppState.topicFormTags.splice(AppState.topicFormTags.findIndex(tag => tag.id == id), 1)
+          logger.log(topicData.value.tagIds)
+        }
       },
       removeTag(id) {
-        let tagIndex = AppState.activeTags.findIndex(tag => tag.id == id)
-        AppState.activeTags.splice(tagIndex, 1)
+
+        let appTagIndex = AppState.activeTags.findIndex(tag => tag.id == id)
+        let dataTagIndex = topicData.value.tagIds.findIndex(tag => tag.id == id)
+        AppState.activeTags.splice(appTagIndex, 1)
+        topicData.value.tagIds.splice(dataTagIndex, 1)
+        // AppState.topicFormTags.push(AppState.tags.find(tag => tag.id == id))
         logger.log(topicData.value.tagIds)
+      },
+      getTopicFormTags() {
+        // AppState.topicFormTags = AppState.tags
       }
+
       // async createDiscussion(disData) {
       //           try {
       //               disData.topicId = route.params.id

@@ -18,6 +18,7 @@ class DiscussionsService {
             .skip(skipNumber)
             // .sort({ fireCount: 'decending' })
             .populate('creator')
+            .populate('comments', 'creator body')
 
         const disCount = await dbContext.Discussions.countDocuments(disQuery)
         const responseObject = {

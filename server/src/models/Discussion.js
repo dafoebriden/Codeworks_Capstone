@@ -15,6 +15,12 @@ DiscussionsSchema.virtual('creator', {
     justOne: true,
     ref: 'Account'
 })
+DiscussionsSchema.virtual('comments', {
+    localField: '_id',
+    foreignField: 'discussionId',
+    ref: 'Comment'
+})
+
 export class DiscussionQuery {
     constructor(queryObject) {
         this.name = new RegExp(queryObject.name, 'ig')

@@ -1,9 +1,9 @@
 import { dbContext } from "../db/DbContext.js"
 
 class TopicTagsService {
-    async createTopicTag(topicId, tagIds) {
+    async createTopicTag(topicId, tagIds, creatorId) {
         const dataArray = tagIds.map(tagId => {
-            return { topicId: topicId, tagId: tagId }
+            return { topicId: topicId, creatorId: creatorId, tagId: tagId }
         })
         const topicTag = await dbContext.TopicTags.create(dataArray)
         return topicTag

@@ -60,6 +60,7 @@ async getTopics() {
         try {
             const res = await api.get(`api/topics/${id}/topicTags`)
             logger.log('Got TopicTags:', res.data)
+            AppState.activeTopicTags = res.data
         } catch (error) {
             Pop.error(error)
         }

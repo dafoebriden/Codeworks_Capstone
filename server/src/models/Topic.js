@@ -14,6 +14,16 @@ TopicsSchema.virtual('creator', {
     justOne: true,
     ref: 'Account'
 })
+TopicsSchema.virtual('topicTags', {
+    localField: '_id',
+    foreignField: 'topicId',
+    ref: 'TopicTag'
+})
+TopicsSchema.virtual('discussions', {
+    localField: '_id',
+    foreignField: 'topicId',
+    ref: 'Discussion'
+})
 
 
 

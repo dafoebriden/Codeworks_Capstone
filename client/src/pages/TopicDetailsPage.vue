@@ -6,6 +6,15 @@
                     <i>
                         <h1 class="display-1 fw-bolder">{{ topic.title }}</h1>
                     </i>
+                    <div class="d-flex">
+                        <div class="m-3 form-tag" v-for="topicTag in topicTags" :key="topicTag.id">
+                            <div v-for="tag in topicTag.tag" :key="tag.id">
+                                <p class="form-tag-top m-0">{{ tag.emoji }}</p>
+                                <p class="form-tag-bot m-0">{{ tag.name }}</p>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
                 <div class="topic-header-bot">
                     <i>
@@ -161,39 +170,36 @@ export default {
         async function getTopic() {
             try {
                 const topic = await topicsService.getTopic(route.params.id)
-                getTopicTagsForTopic()
-                getDiscussions()
-                getComments()
                 return topic
             } catch (error) {
                 Pop.error(error)
             }
         }
-        async function getTopicTagsForTopic() {
-            try {
-                const topicTags = await topicsService.getTopicTagsForTopic(route.params.id)
-                return topicTags
-            } catch (error) {
-                Pop.error(error)
-            }
-        }
+        // async function getTopicTagsForTopic() {
+        //     try {
+        //         const topicTags = await topicsService.getTopicTagsForTopic(route.params.id)
+        //         return topicTags
+        //     } catch (error) {
+        //         Pop.error(error)
+        //     }
+        // }
 
-        async function getDiscussions() {
-            try {
-                const dis = await discussionsService.getDiscussions(route.params.id)
-                return dis
-            } catch (error) {
-                Pop.error(error)
-            }
-        }
-        async function getComments() {
-            try {
-                const com = await commentsService.getComments(route.params.id)
-                return com
-            } catch (error) {
-                Pop.error(error)
-            }
-        }
+        // async function getDiscussions() {
+        //     try {
+        //         const dis = await discussionsService.getDiscussions(route.params.id)
+        //         return dis
+        //     } catch (error) {
+        //         Pop.error(error)
+        //     }
+        // }
+        // async function getComments() {
+        //     try {
+        //         const com = await commentsService.getComments(route.params.id)
+        //         return com
+        //     } catch (error) {
+        //         Pop.error(error)
+        //     }
+        // }
         return {
             editableDiscussionData,
             commentData,
@@ -247,7 +253,7 @@ export default {
     background-position: center;
     box-shadow: inset 0px 0px 10px 4px black;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: top;
     color: black;
     text-shadow: 0px 0px 15px white;
@@ -272,9 +278,6 @@ export default {
     // border-bottom-right-radius: 30px;
     // border-bottom-left-radius: 30px;
     box-shadow: 0px 0px 10px white;
-
-
-
 }
 
 .discussion-header-top {
@@ -291,5 +294,35 @@ export default {
     color: white;
     padding: 10px;
     margin-bottom: 20px;
+}
+
+.form-tag {
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px black;
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.form-tag-top {
+    background-color: black;
+    color: white;
+    height: 65%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: xx-large;
+}
+
+.form-tag-bot {
+    background-color: white;
+    color: black;
+    height: 35%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

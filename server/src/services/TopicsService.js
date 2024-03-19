@@ -17,8 +17,9 @@ class TopicsService {
             .find(topicQuery)
             .limit(topicLimit)
             .skip(skipNumber)
+            .populate('topicTags')
+            .populate('discussions')
         // .sort({ fireCount: 'decending' })
-        // .populate('topicTag')
 
         const topicCount = await dbContext.Topics.countDocuments(topicQuery)
         const responseObject = {
@@ -30,7 +31,7 @@ class TopicsService {
         return responseObject
     }
     async getTopic(id) {
-        const topic = await dbContext.Topics.findById(id)
+        const topic = (await dbContext.Topics.findById(id)).populate('topicTags')
         return topic
     }
     async editTopic(topicData, id, accountId) {
