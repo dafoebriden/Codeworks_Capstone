@@ -1,9 +1,9 @@
 version: '3'
 services:
   app:
-    image: your-dockerhub-username/Codeworks_Capstone:latest
+    image: dafoebriden/codeworks_capstone:latest
     restart: unless-stopped
     env_file:
-      - Codeworks_Capstone-env
+      - codeworks_capstone-env
     ports:
-      - "3000:3000"
+      - "3001:3001"
