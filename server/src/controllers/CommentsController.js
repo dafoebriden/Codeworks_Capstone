@@ -10,6 +10,7 @@ export class CommentsController extends BaseController {
             .get('/:id', this.getComment)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createComment)
+            .use(Auth0Provider.hasPermissions('mod'))
             .put('/:id', this.editComment)
             .delete('/:id', this.deleteComment)
     }

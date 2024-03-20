@@ -4,7 +4,7 @@
     <router-link class="navbar-brand d-flex pt-0" :to="{ name: 'Home' }">
       <div class="d-flex flex-column align-items-center ">
         <h1 class="m-0"><i class="fw-bolder d-flex align-items-center"><span
-              class="fire-text text-white">Blaze</span></i></h1>
+              class="fire-text hanalei-font">blaze</span></i></h1>
       </div>
     </router-link>
     <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
@@ -12,9 +12,10 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarText"> -->
-    <div class="d-flex align-items-center">
-      <input type="email" class="form-control search-bar" id="exampleInputEmail1" aria-describedby="emailHelp"
-        placeholder="🔍 Search Blaze">
+    <div class="d-flex align-items-center input-group" style="max-width: 300px;">
+      <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
+      <input type="text" class="form-control bar-tag bg-dark text-white" id="exampleInputEmail1"
+        aria-describedby="emailHelp" placeholder=" Search Blaze">
     </div>
     <div class="d-flex">
       <button class="btn text-light py-0" @click="toggleTheme">
@@ -58,11 +59,6 @@ a:hover {
   text-decoration: none;
 }
 
-.search-bar {
-  box-shadow: inset -4px 4px 10px 0px black;
-  margin: auto;
-  max-width: 800px;
-}
 
 .nav-link {
   text-transform: uppercase;

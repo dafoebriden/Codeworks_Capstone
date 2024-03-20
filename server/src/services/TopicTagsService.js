@@ -1,6 +1,7 @@
 import { dbContext } from "../db/DbContext.js"
 
 class TopicTagsService {
+
     async createTopicTag(topicId, tagIds, creatorId) {
         const dataArray = tagIds.map(tagId => {
             return { topicId: topicId, creatorId: creatorId, tagId: tagId }
@@ -18,6 +19,9 @@ class TopicTagsService {
         const topicTags = await dbContext.TopicTags.find({ tagId }).populate('topic')
         return topicTags
     }
-}
+    async deleteTopicTags(tagId) {
+        await dbContext.TopicTags.findByIdAndDelete(tagId)
+    }
 
+}
 export const topicTagsService = new TopicTagsService()

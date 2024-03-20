@@ -25,11 +25,12 @@
         <!-- NOTE Tags -->
         <div class="d-flex flex-wrap justify-content-evenly">
           <div class="mb-3">
-            <div class="mb-3 mx-2">
-              <input v-model="tagSearchData" @input="lookAhead()" type="text" class="form-control"
+            <div class="mb-3 input-group p-3">
+              <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
+              <input v-model="tagSearchData" @input="lookAhead()" type="text" class="form-control bar-tag bg-dark"
                 placeholder="Search Tags" style="max-width: 250px;">
             </div>
-            <div class="d-flex" v-if="!tagSearchData">
+            <div class="d-flex" v-if="!tagSearchData" style="flex-wrap:wrap ;">
               <div v-for="tag in selectedTags" :key="tag.id">
                 <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
                   <div class="tag-top">
@@ -44,7 +45,7 @@
 
               </div>
             </div>
-            <div class="d-flex">
+            <div class="d-flex" style="flex-wrap: wrap;">
               <div v-for="tag in tagsSearch" :key="tag.id">
                 <div @click="searchForTag(tag.id)" v-if="!tag.ifSelect && tagSearchData" class="tag selectable"
                   role="button">
@@ -75,7 +76,7 @@
           <!-- NOTE Topics -->
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
-            <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }">
+            <div class="topic-img d-flex justify-content-between" :style="{ backgroundImage: `url(${topic.picture})` }">
               <div class="d-flex">
                 <div class="m-2 topic-tag " v-for="topicTag in topic.topicTags" :key="topicTag.id">
                   <div>
@@ -83,17 +84,17 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="topic-card-bot">
-              <div class="ms-3">
-                <h1 class="mb-0">{{ topic.title }}</h1>
-                <p>{{ topic.quote }}</p>
-              </div>
               <div v-if="account.id == topic.creatorId" class=" text-end">
                 <!-- TODO create edit function and form for topics -->
                 <!-- <button @click="editTopic(topic.id)" class="bar-tag bg-dark m-2">Edit</button> -->
                 <button @click="deleteTopic(topic.id)" class="bar-tag bg-danger m-2">Delete
                 </button>
+              </div>
+            </div>
+            <div class="topic-card-bot">
+              <div class="ms-3">
+                <h1 class="mb-0">{{ topic.title }}</h1>
+                <p>{{ topic.quote }}</p>
               </div>
             </div>
           </div>
@@ -427,6 +428,13 @@ export default {
 // .home-page-no-scroll {
 //   overflow: hidden;
 // }
+.main-font {
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  text-shadow: 0px 0px 10px black;
+  color: white;
+}
 
 .main-page {
   overflow: auto;
@@ -462,6 +470,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
 }
 
 .form-tag {
@@ -471,6 +481,8 @@ export default {
   height: 70px;
   text-align: center;
   font-weight: bold;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
 }
 
 .form-tag-top {
@@ -517,7 +529,6 @@ export default {
   padding: 0;
   border-radius: 20px;
   box-shadow: 0px 0px 15px -2px white;
-
 }
 
 .topic-img {
@@ -540,7 +551,14 @@ export default {
   border: 1px solid rgb(0, 0, 0);
   color: white;
   overflow: hidden;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
+  overflow: auto;
   // box-shadow: inset 0px 0px 15px 0px white;
+}
+
+.topic-card-bot::-webkit-scrollbar {
+  display: none;
 }
 
 .model-form {
@@ -562,7 +580,9 @@ export default {
 }
 
 .dropdown-tags {
-  color: white
+  color: white;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
 }
 
 .dropdown-tags:hover {

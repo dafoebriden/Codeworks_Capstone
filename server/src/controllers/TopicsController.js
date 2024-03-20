@@ -15,6 +15,7 @@ export class TopicsController extends BaseController {
             .get('/:id/discussions', this.getDiscussionsForTopic)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTopic)
+            .use(Auth0Provider.hasPermissions('mod'))
             .put('/:id', this.editTopic)
             .delete('/:id', this.deleteTopic)
     }

@@ -11,6 +11,7 @@ export class TagsController extends BaseController {
             .get('/:id/topicTags', this.getTopicTagsByTag)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTag)
+            .use(Auth0Provider.hasPermissions('mod'))
             .delete('/:id', this.deleteTag)
     }
     async createTag(req, res, next) {
