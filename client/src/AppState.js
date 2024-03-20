@@ -22,6 +22,9 @@ export const AppState = reactive({
   tags: [],
 
   /** @type {import('./models/Tag.js').Tag[]} */
+  tagsSearch: [],
+
+  /** @type {import('./models/Tag.js').Tag[]} */
   activeTags: [],
 
   /** @type {import('./models/Tag.js').Tag[]} */

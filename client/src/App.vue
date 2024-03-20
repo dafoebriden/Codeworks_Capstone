@@ -79,7 +79,11 @@ main {
   background-color: black;
 }
 
-
+.main-page {
+  background-color: black;
+  border-left: 1px solid rgba(255, 255, 255, .5);
+  overflow: auto;
+}
 
 .small-screen {
   justify-content: center;
@@ -88,13 +92,6 @@ main {
 @media screen and (min-width: 576px) {
   .height {
     height: 92vh;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  .main-page {
-    background-color: black;
-    border-left: 1px solid rgba(255, 255, 255, .5);
   }
 }
 </style>
