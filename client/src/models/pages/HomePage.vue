@@ -231,7 +231,7 @@ export default {
     const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     const tagSearchData = ref('')
-    // const router = useRouter() //TODO refference TODO at getTopicTags()
+    // const router = useRouter() //TODO reference TODO at getTopicTags()
     const selectedTags = computed(() => AppState.tags.filter(t => t.ifSelect))
     onMounted(() => {
       getTopics()
@@ -250,6 +250,13 @@ export default {
       try {
         const tags = await tagsService.getTags()
         return tags
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
+    async function getTopic(id) {
+      try {
+        const topic = await topicsService.getTopic(id)
       } catch (error) {
         Pop.error(error)
       }
@@ -279,6 +286,8 @@ export default {
       topicFormTags: computed(() => AppState.topicFormTags),
       tagsSearch: computed(() => AppState.tagsSearch),
       getTopicTags,
+      getTopic,
+      getTopics,
       selectedTags,
       tagSearchData,
       lookAhead,
