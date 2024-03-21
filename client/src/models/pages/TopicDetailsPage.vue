@@ -171,7 +171,7 @@ export default {
         const commentData = { picture: '', body: '', discussionId: '' }
         const route = useRoute()
         onMounted(() =>
-            getTopic(),
+            getDiscussions()
         )
         async function getTopic() {
             try {
@@ -190,23 +190,6 @@ export default {
                 Pop.error(error)
             }
         }
-
-        // async function getTopicTagsForTopic() {
-        //     try {
-        //         const topicTags = await topicsService.getTopicTagsForTopic(route.params.id)
-        //         return topicTags
-        //     } catch (error) {
-        //         Pop.error(error)
-        //     }
-        // }
-        // async function getComments() {
-        //     try {
-        //         const com = await commentsService.getComments(route.params.id)
-        //         return com
-        //     } catch (error) {
-        //         Pop.error(error)
-        //     }
-        // }
         return {
             editableDiscussionData,
             commentData,
@@ -214,7 +197,6 @@ export default {
             topic: computed(() => AppState.activeTopic),
             discussions: computed(() => AppState.discussions),
             comments: computed(() => AppState.comments),
-
             async createDiscussion(disData) {
                 try {
                     disData.topicId = route.params.id

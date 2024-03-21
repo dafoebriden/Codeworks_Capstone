@@ -222,7 +222,7 @@ import { topicTagsService } from '../services/TopicTagsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
-// import { useRouter } from 'vue-router';//TODO
+import { useRouter } from 'vue-router';
 import { logger } from '../utils/Logger';
 
 
@@ -231,7 +231,7 @@ export default {
     const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     const tagSearchData = ref('')
-    // const router = useRouter() //TODO reference TODO at getTopicTags()
+    const router = useRouter()
     const selectedTags = computed(() => AppState.tags.filter(t => t.ifSelect))
     onMounted(() => {
       getTopics()
@@ -256,7 +256,9 @@ export default {
     }
     async function getTopic(id) {
       try {
+        router.push(`topics/${id}`)
         const topic = await topicsService.getTopic(id)
+        return topic
       } catch (error) {
         Pop.error(error)
       }
