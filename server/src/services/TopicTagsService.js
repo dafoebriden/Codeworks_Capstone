@@ -1,6 +1,29 @@
 import { dbContext } from "../db/DbContext.js"
 
 class TopicTagsService {
+    async getTopicTags(query) {
+        const tagId = query.tags
+        const topicTags = await dbContext.TopicTags
+            .find(tagId)
+            .populate({
+                path: 'topic',
+                populate: {
+                    path: 'tag',
+                },
+            })
+        return topicTags
+    }
+    async getTopicTag(topicId) {
+        const topicTags = await dbContext.TopicTags
+            .find(topicId)
+            .populate({
+                path: 'topic',
+                populate: {
+                    path: 'tag',
+                },
+            })
+        return topicTags
+    }
 
     async createTopicTag(topicId, tagIds, creatorId) {
         const dataArray = tagIds.map(tagId => {

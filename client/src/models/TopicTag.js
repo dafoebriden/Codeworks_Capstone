@@ -4,6 +4,7 @@ export class TopicTag{
         this.topicId = data.topicId
         this.tagId = data.tagId
         this.creator = data.creator
+        this.topic = data.topic
         this.tag = data.tag
     }
 }

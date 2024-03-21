@@ -216,14 +216,14 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { topicsService } from '../services/TopicsService';
+import { topicTagsService } from '../services/TopicTagsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';//TODO
 import { logger } from '../utils/Logger';
-// import { discussionsService } from '../services/DiscussionsService';
 
 
 export default {
@@ -231,32 +231,20 @@ export default {
     const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     const tagSearchData = ref('')
-    const router = useRouter()
+    // const router = useRouter() //TODO refference TODO at getTopicTags()
+    const selectedTags = computed(() => AppState.tags.filter(t => t.ifSelect))
     onMounted(() => {
       getTopics()
       getTags()
     })
-
+    watch(selectedTags, () => {
+      getTopicTags(selectedTags)
+    })
     async function lookAhead() {
       let value = tagSearchData.value
       let regex = new RegExp(value, 'ig')
       let choices = AppState.tags.filter(tag => tag.name.match(regex))
       AppState.tagsSearch = choices
-    }
-    async function getTopic(id) {
-      try {
-        router.push(`topics/${id}`)
-      } catch (error) {
-        Pop.error(error)
-      }
-    }
-    async function getTopics() {
-      try {
-        const topics = await topicsService.getTopics()
-        return topics
-      } catch (error) {
-        Pop.error
-      }
     }
     async function getTags() {
       try {
@@ -266,27 +254,37 @@ export default {
         Pop.error(error)
       }
     }
-    // async function getTopicTagsForTopic() {
-    //   try {
-    //     const topicTags = await topicsService.getTopicTagsForTopic()
-    //     return topicTags
-    //   } catch (error) {
-    //     Pop.error(error)
-    //   }
-    // }
+    async function getTopics() {
+      try {
+        const topics = await topicsService.getTopics()
+        return topics
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
+    async function getTopicTags(selectedTags) {
+      try {
+        // TODO make sure to use the router to send the route to the url so the topic details page can be loaded
+        const topicTags = await topicTagsService.getTopicTags(selectedTags.value)
+        return topicTags
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
     return {
       account: computed(() => AppState.account),
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),
-      selectedTags: computed(() => AppState.tags.filter(t => t.ifSelect)),
       activeTags: computed(() => AppState.activeTags),
       topicFormTags: computed(() => AppState.topicFormTags),
       tagsSearch: computed(() => AppState.tagsSearch),
+      getTopicTags,
+      selectedTags,
       tagSearchData,
       lookAhead,
-      getTopic,
       topicData,
       tagData,
+      // SECTION Start Tags functions
       async createTopic(topicData) {
         try {
           const topic = await topicsService.createTopic(topicData)
@@ -303,6 +301,8 @@ export default {
           Pop.error(error)
         }
       },
+      // !SECTION end Topics functions
+      // SECTION start Tags functions
       async createTag(tagData) {
         try {
           const tag = await tagsService.createTag(tagData)
@@ -318,8 +318,8 @@ export default {
           Pop.error(error)
         }
       },
+      // TODO make sure that all of this works properly
       addTag(id) {
-
         AppState.activeTags.map(tag => {
           if (tag.id == id) {
             Pop.error('You can only pick a tag once.')
@@ -337,13 +337,13 @@ export default {
         }
       },
       removeTag(id) {
-
         AppState.tags.find(tag => tag.id == id).ifFormSelect = false
         let dataTagIndex = topicData.value.tagIds.findIndex(tagId => tagId == id)
         if (dataTagIndex == -1) return
         topicData.value.tagIds.splice(dataTagIndex, 1)
         logger.log(topicData.value.tagIds)
       },
+      // TODO check if 'tag.ifSelect = !tag.ifSelect' works.
       searchForTag(id) {
         const tag = AppState.tags.find(tag => tag.id == id)
         if (tag.ifSelect) {
@@ -353,81 +353,14 @@ export default {
         if (!tag.ifSelect) {
           tag.ifSelect = true
         }
-
       }
-      // async createDiscussion(disData) {
-      //           try {
-      //               disData.topicId = route.params.id
-      //               const dis = await discussionsService.createDiscussion(disData)
-      //               return dis
-      //           } catch (error) {
-      //               Pop.error(error)
-      //           }
-      //       }
+      // !SECTION end Tags functions
     }
   }
 }
-// const typeahead = {
-//   selectedIndex: -1, init: function () {
-//     this.input = document.getElementById("typeahead");
-//     if (!this.input) return;
-//     this.resultHolder = document.getElementById("typeahead-results");
-//     this.input.addEventListener("input", this.handleInput.bind(this));
-//     this.input.addEventListener("keydown", this.handleKeydown.bind(this));
-//   },
-//   handleInput: function () {
-//     this.clearResults();
-//     const { value } = this.input; if (value.length < 1) return;
-//     const strongMatch = new RegExp("^" + value, "i");
-//     const weakMatch = new RegExp(value, "i");
-//     const results = AppState.tags.filter(recipe => weakMatch.test(recipe.name)).sort((a, b) => {
-//       if (strongMatch.test(a.name) && !strongMatch.test(b.name)) return -1;
-//       if (!strongMatch.test(a.name) && strongMatch.test(b.name)) return 1;
-//       return a.name < b.name ? -1 : 1;
-//     });
-//     for (const recipe of results) {
-//       const item = document.createElement("li");
-//       const matchedText = weakMatch.exec(recipe.name)[0];
-//       item.innerHTML = recipe.name.replace(matchedText, "<strong>" + matchedText + "</strong>");
-//       item.dataset.permalink = recipe.permalink;
-//       this.resultHolder.appendChild(item);
-//       item.addEventListener("click", this.handleClick);
-//     }
-//   },
-//   handleClick: function () {
-//     window.location.href = this.dataset.permalink;
-//   },
-//   getResults: function () {
-//     return this.resultHolder.children;
-//   },
-//   clearResults: function () {
-//     this.selectedIndex = -1;
-//     while (this.resultHolder.firstChild) {
-//       this.resultHolder.removeChild(this.resultHolder.firstChild);
-//     }
-//   },
-//   handleKeydown: function (event) {
-//     const { keyCode } = event;
-//     const results = this.getResults();
-//     if (keyCode === 40 && this.selectedIndex < results.length - 1) { this.selectedIndex++; }
-//     else if (keyCode === 38 && this.selectedIndex >= 0) { this.selectedIndex--; }
-//     else if (keyCode === 13 && results[this.selectedIndex]) { window.location.href = results[this.selectedIndex].dataset.permalink; }
-//     for (let i = 0; i < results.length; i++) {
-//       const result = results[i]; const selectedClass = "selected";
-//       if (i === this.selectedIndex) { result.classList.add(selectedClass); }
-//       else if (result.classList.contains(selectedClass)) {
-//         result.classList.remove(selectedClass);
-//       }
-//     }
-//   }
-// };
-// typeahead.init();
 </script>
 
 <style scoped lang="scss">
-// .home-page-no-scroll {
-//   overflow: hidden;
-// }
 .main-font {
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
@@ -554,7 +487,6 @@ export default {
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
   overflow: auto;
-  // box-shadow: inset 0px 0px 15px 0px white;
 }
 
 .topic-card-bot::-webkit-scrollbar {
@@ -589,37 +521,4 @@ export default {
   color: black;
   background-color: white;
 }
-
-
-
-
-
-// .typeahead {
-//   position: relative;
-// }
-
-// #typeahead-results {
-//   list-style: none;
-//   position: absolute;
-//   top: 4.5em;
-//   left: 0;
-//   background-color: darkblue;
-//   width: 250px;
-//   margin: 0 0.5em;
-//   padding: 0;
-
-//   &:empty {
-//     display: none;
-//   }
-
-//   @mixin selected {
-//     background-color: darkblue;
-//     color: white;
-//   }
-
-//   li {
-//     border-bottom: 2px solid black;
-//     cursor: pointer;
-//     padding: 1em;
-//   }
-// }</style>
+</style>

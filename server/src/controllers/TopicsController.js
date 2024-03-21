@@ -4,6 +4,7 @@ import { topicsService } from "../services/TopicsService.js";
 import { topicTagsService } from "../services/TopicTagsService.js";
 import { discussionsService } from "../services/DiscussionsService.js";
 import { commentsService } from "../services/CommentsService.js";
+import { logger } from "../utils/Logger.js";
 
 export class TopicsController extends BaseController {
     constructor() {
