@@ -16,7 +16,8 @@ class TopicsService {
         const topicQuery = new TopicQuery(query)
         const topicTags = await dbContext.TopicTags.find({ tagId })
         const _id = topicTags.map(topicTag => topicTag.topicId)
-        const topics = await dbContext.Topics.find({ _id })
+        const x = _id.length ? { _id } : {}
+        const topics = await dbContext.Topics.find(x)
             .find(topicQuery)
             .limit(topicLimit)
             .skip(skipNumber)
