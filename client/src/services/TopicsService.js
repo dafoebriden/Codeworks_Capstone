@@ -27,15 +27,17 @@ class TopicsService{
             const topic = AppState.discussions.findIndex(t=> t.id == id)
             AppState.topics.splice(topic, 1)
 }
-async getTopic(id) {
+    async getTopic(id) {
             AppState.activeTopic = null
             const res = await api.get(`api/topics/${id}`)
             logger.log('Got Topic:', res.data)
             AppState.activeTopic = new Topic(res.data)
     }
-async getTopics() {
+    async getTopics(tagObjects, query) {
         AppState.topics = []
-        const res = await api.get('api/topics')
+        const tags = tagObjects.value.map(tagObj => tagObj.id)
+        query.tags = tags
+        const res = await api.get('api/topics', {params: query})
         logger.log('Got Topics:', res.data)
         AppState.topics = res.data.topics.map(t=> new Topic(t))
 }

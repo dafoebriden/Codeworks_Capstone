@@ -170,9 +170,9 @@ export default {
         const editableDiscussionData = { title: '', picture: '', description: '' }
         const commentData = { picture: '', body: '', discussionId: '' }
         const route = useRoute()
-        onMounted(() =>
-            getDiscussions()
-        )
+        onMounted(() => {
+            getTopic()
+        })
         async function getTopic() {
             try {
                 const topic = await topicsService.getTopic(route.params.id)

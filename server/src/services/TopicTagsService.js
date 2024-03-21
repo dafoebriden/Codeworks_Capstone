@@ -4,24 +4,16 @@ class TopicTagsService {
     async getTopicTags(query) {
         const tagId = query.tags
         const topicTags = await dbContext.TopicTags
-            .find(tagId)
-            .populate({
-                path: 'topic',
-                populate: {
-                    path: 'tag',
-                },
-            })
+            .find({ tagId })
+            .populate('topic')
+            .populate('tag')
         return topicTags
     }
     async getTopicTag(topicId) {
         const topicTags = await dbContext.TopicTags
-            .find(topicId)
-            .populate({
-                path: 'topic',
-                populate: {
-                    path: 'tag',
-                },
-            })
+            .find({ topicId })
+            .populate('topic')
+            .populate('tag')
         return topicTags
     }
 

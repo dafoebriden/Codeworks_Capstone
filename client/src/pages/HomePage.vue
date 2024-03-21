@@ -222,7 +222,7 @@ import { topicTagsService } from '../services/TopicTagsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { logger } from '../utils/Logger';
 
 
@@ -231,14 +231,15 @@ export default {
     const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     const tagSearchData = ref('')
-    const router = useRouter()
     const selectedTags = computed(() => AppState.tags.filter(t => t.ifSelect))
+    const route = useRoute()
+    const router = useRouter()
     onMounted(() => {
-      getTopics()
+      getTopics(selectedTags)
       getTags()
     })
     watch(selectedTags, () => {
-      getTopicTags(selectedTags)
+      getTopics(selectedTags)
     })
     async function lookAhead() {
       let value = tagSearchData.value
@@ -257,29 +258,27 @@ export default {
     async function getTopic(id) {
       try {
         router.push(`topics/${id}`)
-        const topic = await topicsService.getTopic(id)
-        return topic
       } catch (error) {
         Pop.error(error)
       }
     }
-    async function getTopics() {
+    async function getTopics(selectedTags) {
       try {
-        const topics = await topicsService.getTopics()
+        const topics = await topicsService.getTopics(selectedTags, route.query)
         return topics
       } catch (error) {
         Pop.error(error)
       }
     }
-    async function getTopicTags(selectedTags) {
-      try {
-        // TODO make sure to use the router to send the route to the url so the topic details page can be loaded
-        const topicTags = await topicTagsService.getTopicTags(selectedTags.value)
-        return topicTags
-      } catch (error) {
-        Pop.error(error)
-      }
-    }
+    // async function getTopicTags(selectedTags) {
+    //   try {
+    //     // TODO make sure to use the router to send the route to the url so the topic details page can be loaded
+    //     const topicTags = await topicTagsService.getTopicTags(selectedTags.value)
+    //     return topicTags
+    //   } catch (error) {
+    //     Pop.error(error)
+    //   }
+    // }
     return {
       account: computed(() => AppState.account),
       topics: computed(() => AppState.topics),
@@ -287,7 +286,7 @@ export default {
       activeTags: computed(() => AppState.activeTags),
       topicFormTags: computed(() => AppState.topicFormTags),
       tagsSearch: computed(() => AppState.tagsSearch),
-      getTopicTags,
+      // getTopicTags,
       getTopic,
       getTopics,
       selectedTags,
