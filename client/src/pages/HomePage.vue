@@ -10,34 +10,32 @@
             New Tag
           </button>
         </div>
+        <div class="d-flex" style="flex-wrap:wrap ;">
+          <div v-for="tag in activeTags" :key="tag.id">
+            <div @click="deleteSearchForTag(tag.id)" class="tag selectable" role="button">
+              <div class="tag-top">
+                <p class="m-0">{{ tag.emoji }}</p>
+              </div>
+              <div class="tag-bot">
+                <p class="m-0">{{ tag.name }}</p><button v-if="account.id" @click="deleteTag(tag.id)"
+                  class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
         <!-- NOTE Tags -->
         <div class="d-flex flex-wrap justify-content-evenly tags-container">
           <div class="mb-3">
             <div class="mb-3 input-group p-3">
               <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
-              <input v-model="tagSearchData" @input="lookAhead()" type="text"
-                class="form-control searchBar text-white bar-tag bg-dark" placeholder="Search Tags"
-                style="max-width: 250px;">
-            </div>
-            <div class="d-flex" v-if="!tagSearchData" style="flex-wrap:wrap ;">
-              <div v-for="tag in selectedTags" :key="tag.id">
-                <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
-                  <div class="tag-top">
-                    <p class="m-0">{{ tag.emoji }}</p>
-                  </div>
-                  <div class="tag-bot">
-                    <p class="m-0">{{ tag.name }}</p><button v-if="account.id" @click="deleteTag(tag.id)"
-                      class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                    </button>
-                  </div>
-                </div>
-
-              </div>
+              <input v-model="tagSearchData" type="text" class="form-control searchBar text-white bar-tag bg-dark"
+                placeholder="Search Tags" style="max-width: 250px;">
             </div>
             <div class="d-flex" style="flex-wrap: wrap;">
-              <div v-for="tag in tagsSearch" :key="tag.id">
-                <div @click="searchForTag(tag.id)" v-if="!tag.ifSelect && tagSearchData" class="tag selectable"
-                  role="button">
+              <div v-for="tag in tags" :key="tag.id">
+                <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
                   <div class="tag-top">
                     <p class="m-0">{{ tag.emoji }}</p>
                   </div>
@@ -213,7 +211,6 @@
 <script>
 import { computed, onMounted, ref, watch } from 'vue';
 import { topicsService } from '../services/TopicsService';
-import { topicTagsService } from '../services/TopicTagsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
@@ -226,25 +223,39 @@ export default {
     const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     const tagSearchData = ref('')
-    const selectedTags = computed(() => AppState.tags.filter(t => t.ifSelect))
+    const selectedTags = computed(() => AppState.activeTags)
     const route = useRoute()
     const router = useRouter()
     onMounted(() => {
       getTopics(selectedTags)
       getTags(tagSearchData)
     })
-    watch(selectedTags, () => {
-      // getTopics(selectedTags)
-    })
     watch(tagSearchData, () => {
       getTags(tagSearchData)
+      // debounce(() => getTags(tagSearchData), 1000)
     })
-    async function lookAhead() {
-      let value = tagSearchData.value
-      let regex = new RegExp(value, 'ig')
-      let choices = await AppState.tags.filter(tag => tag.name.match(regex))
-      AppState.tagsSearch = choices
-    }
+    // function debounce(func, wait, immediate) {
+    //   var timeout;
+    //   return function () {
+    //     var context = this,
+    //       args = arguments;
+    //     var callNow = immediate && !timeout;
+    //     clearTimeout(timeout);
+    //     timeout = setTimeout(function () {
+    //       timeout = null;
+    //       if (!immediate) {
+    //         func.apply(context, args);
+    //       }
+    //     }, wait);
+    //     if (callNow) func.apply(context, args);
+    //   }
+    // }
+    // async function lookAhead() {
+    //   let value = tagSearchData.value
+    //   let regex = new RegExp(value, 'ig')
+    //   let choices = await AppState.tags.filter(tag => tag.name.match(regex))
+    //   AppState.tagsSearch = choices
+    // }
     async function getTags(tagSearchData) {
       try {
         const tags = await tagsService.getTags(tagSearchData)
@@ -281,16 +292,13 @@ export default {
     return {
       account: computed(() => AppState.account),
       topics: computed(() => AppState.topics),
-      tags: computed(() => AppState.tags),
+      tags: computed(() => AppState.tags.filter(tag => !AppState.activeTags.some(t => t.id == tag.id))),
       activeTags: computed(() => AppState.activeTags),
       topicFormTags: computed(() => AppState.topicFormTags),
-      tagsSearch: computed(() => AppState.tagsSearch),
-      // getTopicTags,
       getTopic,
       getTopics,
       selectedTags,
       tagSearchData,
-      lookAhead,
       topicData,
       tagData,
       // SECTION Start Tags functions
@@ -355,18 +363,18 @@ export default {
       // TODO check if 'tag.ifSelect = !tag.ifSelect' works.
       searchForTag(id) {
         const tag = AppState.tags.find(tag => tag.id == id)
-        if (tag.ifSelect) {
-          tag.ifSelect = false
-          return
-        }
-        if (!tag.ifSelect) {
-          tag.ifSelect = true
-        }
+        AppState.activeTags.push(tag)
+        getTopics(selectedTags)
+      },
+      deleteSearchForTag(id) {
+        const tagIndex = AppState.activeTags.findIndex(tag => tag.id == id)
+        AppState.activeTags.splice(tagIndex, 1)
+        getTopics(selectedTags)
       }
-      // !SECTION end Tags functions
     }
   }
 }
+// !SECTION end Tags functions
 </script>
 
 <style scoped lang="scss">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light" style="background-color:black;">
+<html lang="en" data-bs-theme="light" class="scroll" style="background-color:black;">
 
 <head>
   <meta charset="utf-8" />
@@ -21,7 +21,14 @@
   </noscript>
   <div id="app" class="100vh"></div>
   <!-- built files will be auto injected -->
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="./src/main.js">
+
+  </script>
+  <style scoped lang="scss">
+    .scroll::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
 </body>
 
 </html>
