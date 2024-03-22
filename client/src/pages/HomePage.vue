@@ -143,13 +143,13 @@
             </div>
             <div class="modal-body">
               <form @submit.prevent="createTopic(topicData)">
-                <div class="d-flex align-items-center mb-2">
-                  <div class="col-md-5">
-                    <label for="name" class="form-label fw-bold">Title</label>
+                <div class=" mb-2">
+                  <div class="col-sm-5">
+                    <label for="name" class="form-label fw-bold mb-2">Title</label>
                     <input v-model="topicData.title" type="text" class="form-control invalid" name="title" id="title"
-                      minlength="2" maxlength="25" required>
+                      minlength="2" maxlength="25" required style="min-width: 200px;">
                   </div>
-                  <div class="d-flex">
+                  <div class="d-flex col-sm-4">
                     <div v-for="tag in tags" :key="tag.id">
                       <div v-if="tag.ifFormSelect" @click="removeTag(tag.id)" class="ms-4 form-tag selectable"
                         role="button">
@@ -162,9 +162,8 @@
                 <!-- NOTE Topic Tag Data -->
                 <div class="m-0 input-group p-0">
                   <span class="input-group-text bar-tag bg-dark me-0 ms-0" id="basic-addon1">🔍</span>
-                  <input v-model="tagSearchData" @input="lookAhead()" type="text"
-                    class="form-control searchBar text-white bar-tag bg-dark" placeholder="Search Tags"
-                    style="max-width: 250px;">
+                  <input v-model="tagSearchData" type="text" class="form-control searchBar text-white bar-tag bg-dark"
+                    placeholder="Search Tags" style="max-width: 250px;">
                 </div>
                 <div class="d-flex mb-2">
                   <div class="col-md-3 d-flex align-items-center">
@@ -454,6 +453,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: auto;
 }
 
 .topic-tag {
