@@ -110,11 +110,11 @@ a:hover {
 @media screen and (min-width: 468px) {
 
   .navbar {
-    height: 100px;
+    height: 115px;
   }
 }
 
-@media screen and (min-width: 651px) {
+@media screen and (min-width: 676px) {
 
   .navbar {
     height: 60px;
