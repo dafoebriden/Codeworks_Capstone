@@ -3,19 +3,7 @@
     <div class="row height home-page-no-scroll small-screen">
       <!-- NOTE Side-Bar -->
       <div class="col-11 col-lg-2 bar p-0 d-flex flex-column">
-        <div class="d-flex flex-column justify-content-end mb-3 line-bottom">
-          <div class="d-flex">
-            <!-- <h3 class="emoji" role="button">🏡</h3> -->
-            <RouterLink :to="{ name: 'Home' }"><button class="bar-tag bg-dark"> Home </button>
-            </RouterLink>
-          </div>
-          <div class="d-flex">
-            <!-- <h3 class="emoji" role="button">🔥</h3> -->
-            <RouterLink :to="{ name: 'Home' }"><button class="bar-tag bg-dark"> Hot
-                Topics</button>
-            </RouterLink>
-          </div>
-        </div>
+
         <div class="text-end">
           <button v-if="account.id" type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal"
             data-bs-target="#newTag" style="max-width: 100px;">
@@ -23,13 +11,15 @@
           </button>
         </div>
         <!-- NOTE Tags -->
-        <div class="d-flex flex-wrap justify-content-evenly">
+        <div class="d-flex flex-wrap justify-content-evenly tags-container">
           <div class="mb-3">
-            <div class="mb-3 mx-2">
-              <input v-model="tagSearchData" @input="lookAhead()" type="text" class="form-control"
-                placeholder="Search Tags" style="max-width: 250px;">
+            <div class="mb-3 input-group p-3">
+              <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
+              <input v-model="tagSearchData" @input="lookAhead()" type="text"
+                class="form-control searchBar text-white bar-tag bg-dark" placeholder="Search Tags"
+                style="max-width: 250px;">
             </div>
-            <div class="d-flex" v-if="!tagSearchData">
+            <div class="d-flex" v-if="!tagSearchData" style="flex-wrap:wrap ;">
               <div v-for="tag in selectedTags" :key="tag.id">
                 <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
                   <div class="tag-top">
@@ -44,7 +34,7 @@
 
               </div>
             </div>
-            <div class="d-flex">
+            <div class="d-flex" style="flex-wrap: wrap;">
               <div v-for="tag in tagsSearch" :key="tag.id">
                 <div @click="searchForTag(tag.id)" v-if="!tag.ifSelect && tagSearchData" class="tag selectable"
                   role="button">
@@ -75,7 +65,7 @@
           <!-- NOTE Topics -->
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
-            <div class="topic-img" :style="{ backgroundImage: `url(${topic.picture})` }">
+            <div class="topic-img d-flex justify-content-between" :style="{ backgroundImage: `url(${topic.picture})` }">
               <div class="d-flex">
                 <div class="m-2 topic-tag " v-for="topicTag in topic.topicTags" :key="topicTag.id">
                   <div>
@@ -83,17 +73,17 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="topic-card-bot">
-              <div class="ms-3">
-                <h1 class="mb-0">{{ topic.title }}</h1>
-                <p>{{ topic.quote }}</p>
-              </div>
               <div v-if="account.id == topic.creatorId" class=" text-end">
                 <!-- TODO create edit function and form for topics -->
                 <!-- <button @click="editTopic(topic.id)" class="bar-tag bg-dark m-2">Edit</button> -->
                 <button @click="deleteTopic(topic.id)" class="bar-tag bg-danger m-2">Delete
                 </button>
+              </div>
+            </div>
+            <div class="topic-card-bot">
+              <div class="ms-3">
+                <h1 class="mb-0">{{ topic.title }}</h1>
+                <p>{{ topic.quote }}</p>
               </div>
             </div>
           </div>
@@ -172,8 +162,14 @@
                   </div>
                 </div>
                 <!-- NOTE Topic Tag Data -->
+                <div class="m-0 input-group p-0">
+                  <span class="input-group-text bar-tag bg-dark me-0 ms-0" id="basic-addon1">🔍</span>
+                  <input v-model="tagSearchData" @input="lookAhead()" type="text"
+                    class="form-control searchBar text-white bar-tag bg-dark" placeholder="Search Tags"
+                    style="max-width: 250px;">
+                </div>
                 <div class="d-flex mb-2">
-                  <div class="col-md-3">
+                  <div class="col-md-3 d-flex align-items-center">
                     <div class="dropdown">
                       <button class="form-control dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -215,14 +211,14 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { topicsService } from '../services/TopicsService';
+import { topicTagsService } from '../services/TopicTagsService';
 import Pop from '../utils/Pop';
 import { AppState } from '../AppState';
 import { tagsService } from '../services/TagsService';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { logger } from '../utils/Logger';
-// import { discussionsService } from '../services/DiscussionsService';
 
 
 export default {
@@ -230,44 +226,53 @@ export default {
     const tagData = ref({ name: '', emoji: '' })
     const topicData = ref({ title: '', picture: '', quote: '', tagIds: [] })
     const tagSearchData = ref('')
+    const selectedTags = computed(() => AppState.tags.filter(t => t.ifSelect))
+    const route = useRoute()
     const router = useRouter()
     onMounted(() => {
-      getTopics()
-      getTags()
+      getTopics(selectedTags)
+      getTags(tagSearchData)
     })
-
+    watch(selectedTags, () => {
+      // getTopics(selectedTags)
+    })
+    watch(tagSearchData, () => {
+      getTags(tagSearchData)
+    })
     async function lookAhead() {
       let value = tagSearchData.value
       let regex = new RegExp(value, 'ig')
-      let choices = AppState.tags.filter(tag => tag.name.match(regex))
+      let choices = await AppState.tags.filter(tag => tag.name.match(regex))
       AppState.tagsSearch = choices
     }
-    async function getTopic(id) {
+    async function getTags(tagSearchData) {
       try {
-        router.push(`topics/${id}`)
-      } catch (error) {
-        Pop.error(error)
-      }
-    }
-    async function getTopics() {
-      try {
-        const topics = await topicsService.getTopics()
-        return topics
-      } catch (error) {
-        Pop.error
-      }
-    }
-    async function getTags() {
-      try {
-        const tags = await tagsService.getTags()
+        const tags = await tagsService.getTags(tagSearchData)
         return tags
       } catch (error) {
         Pop.error(error)
       }
     }
-    // async function getTopicTagsForTopic() {
+    async function getTopic(id) {
+      try {
+        router.push(`/topics/${id}`)
+        await topicsService.getTopic(id)
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
+    async function getTopics(selectedTags) {
+      try {
+        const topics = await topicsService.getTopics(selectedTags, route.query)
+        return topics
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
+    // async function getTopicTags(selectedTags) {
     //   try {
-    //     const topicTags = await topicsService.getTopicTagsForTopic()
+    //     // TODO make sure to use the router to send the route to the url so the topic details page can be loaded
+    //     const topicTags = await topicTagsService.getTopicTags(selectedTags.value)
     //     return topicTags
     //   } catch (error) {
     //     Pop.error(error)
@@ -277,15 +282,18 @@ export default {
       account: computed(() => AppState.account),
       topics: computed(() => AppState.topics),
       tags: computed(() => AppState.tags),
-      selectedTags: computed(() => AppState.tags.filter(t => t.ifSelect)),
       activeTags: computed(() => AppState.activeTags),
       topicFormTags: computed(() => AppState.topicFormTags),
       tagsSearch: computed(() => AppState.tagsSearch),
+      // getTopicTags,
+      getTopic,
+      getTopics,
+      selectedTags,
       tagSearchData,
       lookAhead,
-      getTopic,
       topicData,
       tagData,
+      // SECTION Start Tags functions
       async createTopic(topicData) {
         try {
           const topic = await topicsService.createTopic(topicData)
@@ -302,6 +310,8 @@ export default {
           Pop.error(error)
         }
       },
+      // !SECTION end Topics functions
+      // SECTION start Tags functions
       async createTag(tagData) {
         try {
           const tag = await tagsService.createTag(tagData)
@@ -317,8 +327,8 @@ export default {
           Pop.error(error)
         }
       },
+      // TODO make sure that all of this works properly
       addTag(id) {
-
         AppState.activeTags.map(tag => {
           if (tag.id == id) {
             Pop.error('You can only pick a tag once.')
@@ -336,13 +346,13 @@ export default {
         }
       },
       removeTag(id) {
-
         AppState.tags.find(tag => tag.id == id).ifFormSelect = false
         let dataTagIndex = topicData.value.tagIds.findIndex(tagId => tagId == id)
         if (dataTagIndex == -1) return
         topicData.value.tagIds.splice(dataTagIndex, 1)
         logger.log(topicData.value.tagIds)
       },
+      // TODO check if 'tag.ifSelect = !tag.ifSelect' works.
       searchForTag(id) {
         const tag = AppState.tags.find(tag => tag.id == id)
         if (tag.ifSelect) {
@@ -352,81 +362,21 @@ export default {
         if (!tag.ifSelect) {
           tag.ifSelect = true
         }
-
       }
-      // async createDiscussion(disData) {
-      //           try {
-      //               disData.topicId = route.params.id
-      //               const dis = await discussionsService.createDiscussion(disData)
-      //               return dis
-      //           } catch (error) {
-      //               Pop.error(error)
-      //           }
-      //       }
+      // !SECTION end Tags functions
     }
   }
 }
-// const typeahead = {
-//   selectedIndex: -1, init: function () {
-//     this.input = document.getElementById("typeahead");
-//     if (!this.input) return;
-//     this.resultHolder = document.getElementById("typeahead-results");
-//     this.input.addEventListener("input", this.handleInput.bind(this));
-//     this.input.addEventListener("keydown", this.handleKeydown.bind(this));
-//   },
-//   handleInput: function () {
-//     this.clearResults();
-//     const { value } = this.input; if (value.length < 1) return;
-//     const strongMatch = new RegExp("^" + value, "i");
-//     const weakMatch = new RegExp(value, "i");
-//     const results = AppState.tags.filter(recipe => weakMatch.test(recipe.name)).sort((a, b) => {
-//       if (strongMatch.test(a.name) && !strongMatch.test(b.name)) return -1;
-//       if (!strongMatch.test(a.name) && strongMatch.test(b.name)) return 1;
-//       return a.name < b.name ? -1 : 1;
-//     });
-//     for (const recipe of results) {
-//       const item = document.createElement("li");
-//       const matchedText = weakMatch.exec(recipe.name)[0];
-//       item.innerHTML = recipe.name.replace(matchedText, "<strong>" + matchedText + "</strong>");
-//       item.dataset.permalink = recipe.permalink;
-//       this.resultHolder.appendChild(item);
-//       item.addEventListener("click", this.handleClick);
-//     }
-//   },
-//   handleClick: function () {
-//     window.location.href = this.dataset.permalink;
-//   },
-//   getResults: function () {
-//     return this.resultHolder.children;
-//   },
-//   clearResults: function () {
-//     this.selectedIndex = -1;
-//     while (this.resultHolder.firstChild) {
-//       this.resultHolder.removeChild(this.resultHolder.firstChild);
-//     }
-//   },
-//   handleKeydown: function (event) {
-//     const { keyCode } = event;
-//     const results = this.getResults();
-//     if (keyCode === 40 && this.selectedIndex < results.length - 1) { this.selectedIndex++; }
-//     else if (keyCode === 38 && this.selectedIndex >= 0) { this.selectedIndex--; }
-//     else if (keyCode === 13 && results[this.selectedIndex]) { window.location.href = results[this.selectedIndex].dataset.permalink; }
-//     for (let i = 0; i < results.length; i++) {
-//       const result = results[i]; const selectedClass = "selected";
-//       if (i === this.selectedIndex) { result.classList.add(selectedClass); }
-//       else if (result.classList.contains(selectedClass)) {
-//         result.classList.remove(selectedClass);
-//       }
-//     }
-//   }
-// };
-// typeahead.init();
 </script>
 
 <style scoped lang="scss">
-// .home-page-no-scroll {
-//   overflow: hidden;
-// }
+.main-font {
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  text-shadow: 0px 0px 10px black;
+  color: white;
+}
 
 .main-page {
   overflow: auto;
@@ -462,6 +412,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
 }
 
 .form-tag {
@@ -471,6 +423,8 @@ export default {
   height: 70px;
   text-align: center;
   font-weight: bold;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
 }
 
 .form-tag-top {
@@ -517,7 +471,6 @@ export default {
   padding: 0;
   border-radius: 20px;
   box-shadow: 0px 0px 15px -2px white;
-
 }
 
 .topic-img {
@@ -540,7 +493,13 @@ export default {
   border: 1px solid rgb(0, 0, 0);
   color: white;
   overflow: hidden;
-  // box-shadow: inset 0px 0px 15px 0px white;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
+  overflow: auto;
+}
+
+.topic-card-bot::-webkit-scrollbar {
+  display: none;
 }
 
 .model-form {
@@ -562,7 +521,9 @@ export default {
 }
 
 .dropdown-tags {
-  color: white
+  color: white;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
 }
 
 .dropdown-tags:hover {
@@ -570,36 +531,8 @@ export default {
   background-color: white;
 }
 
-
-
-
-
-// .typeahead {
-//   position: relative;
-// }
-
-// #typeahead-results {
-//   list-style: none;
-//   position: absolute;
-//   top: 4.5em;
-//   left: 0;
-//   background-color: darkblue;
-//   width: 250px;
-//   margin: 0 0.5em;
-//   padding: 0;
-
-//   &:empty {
-//     display: none;
-//   }
-
-//   @mixin selected {
-//     background-color: darkblue;
-//     color: white;
-//   }
-
-//   li {
-//     border-bottom: 2px solid black;
-//     cursor: pointer;
-//     padding: 1em;
-//   }
-// }</style>
+.searchBar::-webkit-input-placeholder {
+  color: white;
+  font-style: italic;
+}
+</style>

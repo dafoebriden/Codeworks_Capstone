@@ -9,11 +9,15 @@ class TopicsService {
         return topic
     }
     async getTopics(query) {
+        const tagId = query.tags
         const pageNumber = parseInt(query.page) || 1
         const topicLimit = 10
         const skipNumber = (pageNumber - 1) * topicLimit
         const topicQuery = new TopicQuery(query)
-        const topics = await dbContext.Topics
+        const topicTags = await dbContext.TopicTags.find({ tagId })
+        const _id = topicTags.map(topicTag => topicTag.topicId)
+        const x = _id.length ? { _id } : {}
+        const topics = await dbContext.Topics.find(x)
             .find(topicQuery)
             .limit(topicLimit)
             .skip(skipNumber)
@@ -21,12 +25,8 @@ class TopicsService {
                 path: 'topicTags',
                 populate: {
                     path: 'tag',
-
                 },
             })
-        // .populate('discussions')
-        // .sort({ fireCount: 'decending' })
-
         const topicCount = await dbContext.Topics.countDocuments(topicQuery)
         const responseObject = {
             topics: topics,

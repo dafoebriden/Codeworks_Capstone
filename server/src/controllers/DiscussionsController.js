@@ -12,6 +12,7 @@ export class DiscussionsController extends BaseController {
             .get('/:id/comments', this.getCommentsForDiscussion)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createDiscussion)
+            .use(Auth0Provider.hasPermissions('mod'))
             .put('/:id', this.editDiscussion)
             .delete('/:id', this.deleteDiscussion)
     }

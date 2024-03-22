@@ -4,6 +4,7 @@ import { topicsService } from "../services/TopicsService.js";
 import { topicTagsService } from "../services/TopicTagsService.js";
 import { discussionsService } from "../services/DiscussionsService.js";
 import { commentsService } from "../services/CommentsService.js";
+import { logger } from "../utils/Logger.js";
 
 export class TopicsController extends BaseController {
     constructor() {
@@ -15,6 +16,7 @@ export class TopicsController extends BaseController {
             .get('/:id/discussions', this.getDiscussionsForTopic)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTopic)
+            .use(Auth0Provider.hasPermissions('mod'))
             .put('/:id', this.editTopic)
             .delete('/:id', this.deleteTopic)
     }

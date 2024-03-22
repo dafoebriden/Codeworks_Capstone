@@ -1,29 +1,38 @@
 <template>
-  <div class="navbar px-3 py-0">
-    <!-- <nav class="navbar navbar-expand-sm navbar-dark px-3"> -->
-    <router-link class="navbar-brand d-flex pt-0" :to="{ name: 'Home' }">
-      <div class="d-flex flex-column align-items-center ">
-        <h1 class="m-0"><i class="fw-bolder d-flex align-items-center"><span
-              class="fire-text text-white">Blaze</span></i></h1>
-      </div>
-    </router-link>
-    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
-      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarText"> -->
-    <div class="d-flex align-items-center">
-      <input type="email" class="form-control search-bar" id="exampleInputEmail1" aria-describedby="emailHelp"
-        placeholder="🔍 Search Blaze">
-    </div>
+  <div class="navbar nav px-3 py-0">
     <div class="d-flex">
-      <button class="btn text-light py-0" @click="toggleTheme">
-        <i class="mdi" :class="theme == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"></i>
-      </button>
-      <Login />
+      <router-link class="navbar-brand d-flex pt-0" :to="{ name: 'Home' }">
+        <div class="d-flex flex-column align-items-center ">
+          <h1 class="m-0"><i class="fw-bolder d-flex align-items-center"><span
+                class="fire-text hanalei-font">blaze</span></i></h1>
+        </div>
+      </router-link>
+      <div class="d-flex align-items-center">
+        <div class="d-flex">
+          <RouterLink :to="{ name: 'Home' }"><button class="bar-tag bg-dark"> Home </button>
+          </RouterLink>
+        </div>
+        <div class="d-flex">
+          <RouterLink :to="{ name: 'Home' }"><button class="bar-tag bg-dark"> Hot
+              Topics</button>
+          </RouterLink>
+        </div>
+      </div>
     </div>
-    <!-- </div> -->
-    <!-- </nav> -->
+
+    <div class="d-flex search-login">
+      <div class="d-flex align-items-center input-group" style="max-width: 300px;">
+        <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
+        <input type="text" class="form-control bar-tag bg-dark searchBar text-white" id="exampleInputEmail1"
+          aria-describedby="emailHelp" placeholder=" Search Blaze">
+      </div>
+      <div class="d-flex">
+        <button class="btn text-light py-0" @click="toggleTheme">
+          <i class="mdi" :class="theme == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"></i>
+        </button>
+        <Login />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,11 +67,6 @@ a:hover {
   text-decoration: none;
 }
 
-.search-bar {
-  box-shadow: inset -4px 4px 10px 0px black;
-  margin: auto;
-  max-width: 800px;
-}
 
 .nav-link {
   text-transform: uppercase;
@@ -74,7 +78,8 @@ a:hover {
   align-items: center;
   /* box-shadow: 0px 2px 15px white; */
   border-bottom: 1px solid rgba(255, 255, 255, .5);
-  height: 6vh;
+  height: 150px;
+  justify-content: center;
 }
 
 .navbar-nav .router-link-exact-active {
@@ -91,12 +96,23 @@ a:hover {
     0px -20px 40px #C33;
 }
 
+.searchBar::-webkit-input-placeholder {
+  color: white;
+  font-style: italic;
+}
 
+@media screen and (min-width: 468px) {
 
+  .navbar {
+    height: 100px;
+  }
+}
 
-@media screen and (min-width: 576px) {
-  nav {
-    height: 6vh;
+@media screen and (min-width: 651px) {
+
+  .navbar {
+    height: 60px;
+    justify-content: space-between;
   }
 }
 </style>

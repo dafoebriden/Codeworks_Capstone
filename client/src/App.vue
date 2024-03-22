@@ -58,6 +58,9 @@ footer {
   padding-right: 3px;
   margin: 5px;
   border-radius: 10px;
+  text-shadow: 0px 0px 3px black;
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
   // background-color: rgba(255, 255, 255, .1);
 }
 
@@ -81,12 +84,20 @@ main {
 
 .main-page {
   background-color: black;
-  border-left: 1px solid rgba(255, 255, 255, .5);
+  // border-left: 1px solid rgba(255, 255, 255, .5);
   overflow: auto;
 }
 
 .small-screen {
   justify-content: center;
+}
+
+.hanalei-font {
+  font-family: "Hanalei Fill", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  text-shadow: 0px 0px 10px white;
+  color: black;
 }
 
 @media screen and (min-width: 576px) {

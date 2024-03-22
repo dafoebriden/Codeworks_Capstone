@@ -163,6 +163,9 @@ import { discussionsService } from '../services/DiscussionsService';
 import { commentsService } from '../services/CommentsService';
 import { topicsService } from '../services/TopicsService';
 import { AppState } from '../AppState';
+import { logger } from '../utils/Logger';
+import { formToJSON } from 'axios';
+import { reference } from '@popperjs/core';
 // import { tagsService } from '../services/TagsService';
 
 export default {
@@ -170,9 +173,9 @@ export default {
         const editableDiscussionData = { title: '', picture: '', description: '' }
         const commentData = { picture: '', body: '', discussionId: '' }
         const route = useRoute()
-        onMounted(() =>
-            getTopic(),
-        )
+        onMounted(() => {
+            getTopic()
+        })
         async function getTopic() {
             try {
                 const topic = await topicsService.getTopic(route.params.id)
@@ -190,40 +193,37 @@ export default {
                 Pop.error(error)
             }
         }
-
-        // async function getTopicTagsForTopic() {
-        //     try {
-        //         const topicTags = await topicsService.getTopicTagsForTopic(route.params.id)
-        //         return topicTags
-        //     } catch (error) {
-        //         Pop.error(error)
-        //     }
-        // }
-        // async function getComments() {
-        //     try {
-        //         const com = await commentsService.getComments(route.params.id)
-        //         return com
-        //     } catch (error) {
-        //         Pop.error(error)
-        //     }
-        // }
+        async function createDiscussion(disData) {
+            try {
+                disData.topicId = route.params.id
+                const dis = await discussionsService.createDiscussion(disData)
+                this.editableDiscussionData = {}
+                disData = {}
+                return dis
+            } catch (error) {
+                Pop.error(error)
+            }
+        }
+        async function createComment(id, commentData) {
+            try {
+                commentData.discussionId = id
+                const com = await commentsService.createComment(commentData)
+                this.commentData = {}
+                return com
+            } catch (error) {
+                Pop.error(error)
+            }
+        }
         return {
             editableDiscussionData,
             commentData,
+            createDiscussion,
+            createComment,
             account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
             discussions: computed(() => AppState.discussions),
             comments: computed(() => AppState.comments),
 
-            async createDiscussion(disData) {
-                try {
-                    disData.topicId = route.params.id
-                    const dis = await discussionsService.createDiscussion(disData)
-                    return dis
-                } catch (error) {
-                    Pop.error(error)
-                }
-            },
             async deleteDiscussion(id) {
                 try {
                     await discussionsService.deleteDiscussion(id)
@@ -231,15 +231,7 @@ export default {
                     Pop.error(error)
                 }
             },
-            async createComment(id, commentData) {
-                try {
-                    commentData.discussionId = id
-                    const com = await commentsService.createComment(commentData)
-                    return com
-                } catch (error) {
-                    Pop.error(error)
-                }
-            },
+
             async getCommentsForDiscussion(id) {
                 try {
                     const com = await commentsService.getCommentsForDiscussion(id)
