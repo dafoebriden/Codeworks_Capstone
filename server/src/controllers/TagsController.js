@@ -12,6 +12,7 @@ export class TagsController extends BaseController {
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createTag)
             .use(Auth0Provider.hasPermissions('mod'))
+            .use(Auth0Provider.hasPermissions('Full Control'))
             .delete('/:id', this.deleteTag)
     }
     async createTag(req, res, next) {
@@ -24,8 +25,13 @@ export class TagsController extends BaseController {
         }
     }
     async getTags(req, res, next) {
-        const tags = await tagsService.getTags(req.query)
-        res.send(tags)
+        try {
+            const tags = await tagsService.getTags(req.query)
+            res.send(tags)
+        } catch (error) {
+            next(error)
+        }
+
     }
     // NOTE getting all the topics related to a tag
     async getTopicTagsByTag(req, res, next) {

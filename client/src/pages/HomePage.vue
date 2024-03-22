@@ -3,19 +3,7 @@
     <div class="row height home-page-no-scroll small-screen">
       <!-- NOTE Side-Bar -->
       <div class="col-11 col-lg-2 bar p-0 d-flex flex-column">
-        <div class="d-flex flex-column justify-content-end mb-3 line-bottom">
-          <div class="d-flex">
-            <!-- <h3 class="emoji" role="button">🏡</h3> -->
-            <RouterLink :to="{ name: 'Home' }"><button class="bar-tag bg-dark"> Home </button>
-            </RouterLink>
-          </div>
-          <div class="d-flex">
-            <!-- <h3 class="emoji" role="button">🔥</h3> -->
-            <RouterLink :to="{ name: 'Home' }"><button class="bar-tag bg-dark"> Hot
-                Topics</button>
-            </RouterLink>
-          </div>
-        </div>
+
         <div class="text-end">
           <button v-if="account.id" type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal"
             data-bs-target="#newTag" style="max-width: 100px;">
@@ -23,12 +11,13 @@
           </button>
         </div>
         <!-- NOTE Tags -->
-        <div class="d-flex flex-wrap justify-content-evenly">
+        <div class="d-flex flex-wrap justify-content-evenly tags-container">
           <div class="mb-3">
             <div class="mb-3 input-group p-3">
               <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
-              <input v-model="tagSearchData" @input="lookAhead()" type="text" class="form-control bar-tag bg-dark"
-                placeholder="Search Tags" style="max-width: 250px;">
+              <input v-model="tagSearchData" @input="lookAhead()" type="text"
+                class="form-control searchBar text-white bar-tag bg-dark" placeholder="Search Tags"
+                style="max-width: 250px;">
             </div>
             <div class="d-flex" v-if="!tagSearchData" style="flex-wrap:wrap ;">
               <div v-for="tag in selectedTags" :key="tag.id">
@@ -173,8 +162,14 @@
                   </div>
                 </div>
                 <!-- NOTE Topic Tag Data -->
+                <div class="m-0 input-group p-0">
+                  <span class="input-group-text bar-tag bg-dark me-0 ms-0" id="basic-addon1">🔍</span>
+                  <input v-model="tagSearchData" @input="lookAhead()" type="text"
+                    class="form-control searchBar text-white bar-tag bg-dark" placeholder="Search Tags"
+                    style="max-width: 250px;">
+                </div>
                 <div class="d-flex mb-2">
-                  <div class="col-md-3">
+                  <div class="col-md-3 d-flex align-items-center">
                     <div class="dropdown">
                       <button class="form-control dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -236,20 +231,23 @@ export default {
     const router = useRouter()
     onMounted(() => {
       getTopics(selectedTags)
-      getTags()
+      getTags(tagSearchData)
     })
     watch(selectedTags, () => {
       getTopics(selectedTags)
     })
+    watch(tagSearchData, () => {
+      getTags(tagSearchData)
+    })
     async function lookAhead() {
       let value = tagSearchData.value
       let regex = new RegExp(value, 'ig')
-      let choices = AppState.tags.filter(tag => tag.name.match(regex))
+      let choices = await AppState.tags.filter(tag => tag.name.match(regex))
       AppState.tagsSearch = choices
     }
-    async function getTags() {
+    async function getTags(tagSearchData) {
       try {
-        const tags = await tagsService.getTags()
+        const tags = await tagsService.getTags(tagSearchData)
         return tags
       } catch (error) {
         Pop.error(error)
@@ -530,5 +528,10 @@ export default {
 .dropdown-tags:hover {
   color: black;
   background-color: white;
+}
+
+.searchBar::-webkit-input-placeholder {
+  color: white;
+  font-style: italic;
 }
 </style>

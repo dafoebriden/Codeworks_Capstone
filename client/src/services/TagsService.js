@@ -40,9 +40,12 @@ class TagsService{
     }
     getTag() {
     }
-    async getTags(){
+    async getTags(queryData){
         try {
-            const res = await api.get('api/tags')
+            let query = {}
+            query.name = queryData.value
+            logger.log('Query:', query)
+            const res = await api.get('api/tags', {params: query})
         logger.log('Got Tags:', res.data)
         AppState.tags = res.data.tags.map(t=> new Tag(t))
         } catch (error) {
