@@ -23,8 +23,8 @@
     <div class="d-flex search-login">
       <div class="d-flex align-items-center input-group" style="max-width: 300px;">
         <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
-        <input type="text" class="form-control bar-tag bg-dark searchBar text-white" id="exampleInputEmail1"
-          aria-describedby="emailHelp" placeholder=" Search Blaze">
+        <input v-model="topicNameSearch" type="text" class="form-control bar-tag bg-dark searchBar text-white"
+          id="exampleInputEmail1" aria-describedby="emailHelp" placeholder=" Search Blaze">
       </div>
       <div class="d-flex">
         <button class="btn text-light py-0" @click="toggleTheme">
@@ -42,7 +42,8 @@ import { loadState, saveState } from '../utils/Store.js';
 import Login from './Login.vue';
 export default {
   setup() {
-
+    { }
+    const topicNameSearch = ref('')
     const theme = ref(loadState('theme') || 'light')
 
     onMounted(() => {
@@ -51,6 +52,7 @@ export default {
 
     return {
       theme,
+      topicNameSearch,
       toggleTheme() {
         theme.value = theme.value == 'light' ? 'dark' : 'light'
         document.documentElement.setAttribute('data-bs-theme', theme.value)

@@ -16,8 +16,9 @@ class TopicsService {
         const topicQuery = new TopicQuery(query)
         const topicTags = await dbContext.TopicTags.find({ tagId })
         const _id = topicTags.map(topicTag => topicTag.topicId)
-        const x = _id.length ? { _id } : {}
-        const topics = await dbContext.Topics.find(x)
+        let x = _id.length ? { _id } : {}
+        const topics = await dbContext.Topics
+            .find(x)
             .find(topicQuery)
             .limit(topicLimit)
             .skip(skipNumber)
@@ -28,11 +29,19 @@ class TopicsService {
                 },
             })
         const topicCount = await dbContext.Topics.countDocuments(topicQuery)
-        const responseObject = {
+        let responseObject = {
             topics: topics,
             page: pageNumber,
             count: topicCount,
             totalPages: Math.ceil(topicCount / 10)
+        }
+        if (tagId && !topicTags.length) {
+            responseObject = {
+                topics: [],
+                page: 1,
+                count: topicCount,
+                totalPages: 1
+            }
         }
         return responseObject
     }
