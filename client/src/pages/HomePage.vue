@@ -234,7 +234,7 @@ export default {
       getTags(tagSearchData)
     })
     watch(selectedTags, () => {
-      getTopics(selectedTags)
+      // getTopics(selectedTags)
     })
     watch(tagSearchData, () => {
       getTags(tagSearchData)
@@ -255,7 +255,8 @@ export default {
     }
     async function getTopic(id) {
       try {
-        router.push(`topics/${id}`)
+        router.push(`/topics/${id}`)
+        await topicsService.getTopic(id)
       } catch (error) {
         Pop.error(error)
       }

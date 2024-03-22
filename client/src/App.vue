@@ -84,7 +84,7 @@ main {
 
 .main-page {
   background-color: black;
-  border-left: 1px solid rgba(255, 255, 255, .5);
+  // border-left: 1px solid rgba(255, 255, 255, .5);
   overflow: auto;
 }
 

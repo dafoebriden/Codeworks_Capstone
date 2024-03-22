@@ -17,8 +17,11 @@ class CommentsService{
             return
         }
             const res = await api.post('api/comments', commentData)
-            logger.log('Created Comment', res.data)
-            AppState.comments.push(new Comment(res.data))
+            Pop.success('You just Commented')
+            logger.log('comment data:', res.data)
+            const discussion = AppState.discussions.find(dis=> dis.id == commentData.discussionId)
+            discussion.comments.push(new Comment(res.data))
+            // discussion.comments.splice(-1, 0, new Comment(res.data))
         } catch (error) {
             Pop.error(error)
         }

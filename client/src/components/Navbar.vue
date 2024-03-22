@@ -79,6 +79,7 @@ a:hover {
   /* box-shadow: 0px 2px 15px white; */
   border-bottom: 1px solid rgba(255, 255, 255, .5);
   height: 150px;
+  justify-content: center;
 }
 
 .navbar-nav .router-link-exact-active {
@@ -100,26 +101,18 @@ a:hover {
   font-style: italic;
 }
 
-.search-login {
-  flex-direction: column-reverse;
-}
-
-
-@media screen and (min-width: 650px) {
-
-  .navbar {
-    height: 60px;
-  }
-}
-
 @media screen and (min-width: 468px) {
 
   .navbar {
-    height: 80px;
+    height: 100px;
   }
+}
 
-  .search-login {
-    flex-direction: unset;
+@media screen and (min-width: 651px) {
+
+  .navbar {
+    height: 60px;
+    justify-content: space-between;
   }
 }
 </style>
