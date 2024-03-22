@@ -90,6 +90,10 @@ a:hover {
   border-bottom-right-radius: 0;
 }
 
+.fire-text {
+  font-size: xxx-large;
+}
+
 .fire-text:hover {
   color: #f5f5f5;
   text-shadow: 0px -2px 4px #fff,

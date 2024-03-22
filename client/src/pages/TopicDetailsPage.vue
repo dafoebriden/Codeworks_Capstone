@@ -1,26 +1,25 @@
 <template>
     <div v-if="topic" class="container-fluid">
-        <div class="row">
-            <div class="col-12 p-0">
-                <div class="topic-header-top" :style="{ backgroundImage: `url(${topic.picture})` }">
+        <div class="row topic-header-top" :style="{ backgroundImage: `url(${topic.picture})` }">
+            <div class="col-12 col-md-7 ">
+                <div class="">
                     <i>
                         <h1 class="display-1 fw-bolder">{{ topic.title }}</h1>
                     </i>
-                    <div class="d-flex">
-                        <div class="m-3 form-tag" v-for="topicTag in topic.topicTags" :key="topicTag.id">
-                            <div>
-                                <p class="form-tag-top m-0">{{ topicTag.tag.emoji }}</p>
-                                <p class="form-tag-bot m-0">{{ topicTag.tag.name }}</p>
-                            </div>
-
-                        </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex">
+                <div class="m-3 form-tag" v-for="topicTag in topic.topicTags" :key="topicTag.id">
+                    <div>
+                        <p class="form-tag-top m-0">{{ topicTag.tag.emoji }}</p>
+                        <p class="form-tag-bot m-0">{{ topicTag.tag.name }}</p>
                     </div>
                 </div>
-                <div class="topic-header-bot">
-                    <i>
-                        <p>{{ topic.quote }}</p>
-                    </i>
-                </div>
+            </div>
+            <div class=" col-12 topic-header-bot">
+                <i>
+                    <p>{{ topic.quote }}</p>
+                </i>
             </div>
         </div>
         <div class="row d-flex justify-content-center">
@@ -114,32 +113,17 @@
                             <label for="name" class="form-label">Title</label>
                             <input v-model="editableDiscussionData.title" type="text" class="form-control invalid"
                                 id="name" minlength="2" maxlength="25" required>
-                            <!-- <div id="nameFeedback" class="invalid-feedback">
-                                Please choose a title.
-                            </div>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div> -->
                         </div>
                         <div class="col-md-12">
                             <label for="name" class="form-label">Picture</label>
                             <input v-model="editableDiscussionData.picture" type="text" class="form-control invalid"
                                 id="name" minlength="5" maxlength="1000" required>
-                            <!-- <div id="nameFeedback" class="invalid-feedback">
-                                Please choose a picture.
-                            </div>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div> -->
                         </div>
                         <div class="col-md-12">
                             <label for="description" class="form-label">Description</label>
                             <textarea v-model="editableDiscussionData.description" type="text"
                                 class="form-control invalid" id="description" aria-describedby="descriptionFeedback"
                                 required></textarea>
-                            <!-- <div id="descriptionFeedback" class="invalid-feedback">
-                                Please provide a description.
-                            </div> -->
                         </div>
                         <div class="d-flex justify-content-end pt-3">
                             <button class="btn btn-primary" type="submit">Create Discussion</button>
@@ -253,7 +237,7 @@ export default {
 
 .topic-header-top {
     padding: 0px;
-    height: 30vw;
+    min-height: 30vw;
     width: 100%;
     background-size: cover;
     background-position: center;
