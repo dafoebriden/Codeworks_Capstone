@@ -3,13 +3,21 @@
     <div class="row height home-page-no-scroll small-screen">
       <!-- NOTE Side-Bar -->
       <div class="col-11 col-lg-2 bar p-0 d-flex flex-column">
-
-        <div class="text-end">
-          <button v-if="account.id" type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal"
-            data-bs-target="#newTag" style="max-width: 100px;">
-            New Tag
-          </button>
+        <div class="d-flex justify-content-end">
+          <div class=" text-end">
+            <button v-if="account.id" type="button" class="bar-tag bg-success m-1" data-bs-toggle="modal"
+              data-bs-target="#newTopic">
+              New Topic
+            </button>
+          </div>
+          <div class="text-end">
+            <button v-if="account.id" type="button" class="bar-tag bg-success m-1" data-bs-toggle="modal"
+              data-bs-target="#newTag" style="max-width: 100px;">
+              New Tag
+            </button>
+          </div>
         </div>
+
         <div class="d-flex" style="flex-wrap:wrap ;">
           <div v-for="tag in activeTags" :key="tag.id">
             <div @click="deleteSearchForTag(tag.id)" class="tag selectable" role="button">
@@ -17,49 +25,57 @@
                 <p class="m-0">{{ tag.emoji }}</p>
               </div>
               <div class="tag-bot">
-                <p class="m-0">{{ tag.name }}</p><button v-if="account.id" @click="deleteTag(tag.id)"
-                  class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                </button>
+                <p class="m-0">{{ tag.name }}</p>
+                <!-- <button v-if="" @click="deleteTag(tag.id)" class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
+                </button> -->
               </div>
             </div>
-
           </div>
         </div>
         <!-- NOTE Tags -->
         <div class="d-flex flex-wrap justify-content-evenly tags-container">
           <div class="mb-3">
-            <div class="mb-3 input-group p-3">
+            <div class="m-0 input-group p-2">
               <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
               <input v-model="tagSearchData" type="text" class="form-control searchBar text-white bar-tag bg-dark"
                 placeholder="Search Tags" style="max-width: 250px;">
             </div>
-            <div class="d-flex" style="flex-wrap: wrap;">
+            <div class="col-md-3 d-flex align-items-center">
+              <div class="dropdown">
+                <button class="form-control dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Add Tags
+                </button>
+                <ul class="dropdown-menu tags-dropdown" style="max-height: 250px; overflow: auto;">
+                  <div @click="searchForTag(tag.id)" v-for="tag in tags" :key="tag.id" class=" p-0" href="#">
+                    <div class=" dropdown-item dropdown-tags selectable" role="button">
+                      {{ tag.name }}{{ tag.emoji }}
+                    </div>
+                  </div>
+                </ul>
+              </div>
+            </div>
+            <!-- <div class="d-flex" style="flex-wrap: wrap;">
               <div v-for="tag in tags" :key="tag.id">
                 <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
                   <div class="tag-top">
                     <p class="m-0">{{ tag.emoji }}</p>
                   </div>
                   <div class="tag-bot">
-                    <p class="m-0">{{ tag.name }}</p><button v-if="account.id" @click="deleteTag(tag.id)"
-                      class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                    </button>
+                    <p class="m-0">{{ tag.name }}</p>
+                    // <button v-if="account.id" @click="deleteTag(tag.id)"
+                      // class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
+                    // </button>
                   </div>
                 </div>
               </div>
-            </div>
-
+            </div> -->
           </div>
         </div>
       </div>
       <!-- NOTE Main Page -->
       <div class="col-11 col-lg-10 ">
         <div class="row d-flex main-page justify-content-evenly">
-          <div class="col-12 text-end">
-            <button v-if="account.id" type="button" class="bar-tag bg-success" data-bs-toggle="modal"
-              data-bs-target="#newTopic">
-              New Topic
-            </button>
-          </div>
           <!-- NOTE Topics -->
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
@@ -86,7 +102,6 @@
             </div>
           </div>
         </div>
-
       </div>
       <!-- NOTE Create Tag Form -->
       <div class="modal fade" id="newTag" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -470,8 +485,8 @@ export default {
 }
 
 .topic-card {
-  width: 300px;
-  height: 300px;
+  width: 95%;
+  height: 500px;
   margin-top: 25px;
   margin-bottom: 25px;
   margin-right: 25px;
@@ -482,8 +497,8 @@ export default {
 }
 
 .topic-img {
-  height: 40%;
-  object-position: center;
+  height: 65%;
+  background-size: cover;
   width: 100%;
   border-top: 1px solid black;
   border-left: 1px solid black;
@@ -494,7 +509,7 @@ export default {
 }
 
 .topic-card-bot {
-  height: 60%;
+  height: 35%;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   background-color: black;
@@ -542,5 +557,33 @@ export default {
 .searchBar::-webkit-input-placeholder {
   color: white;
   font-style: italic;
+}
+
+@media screen and (min-width: 468px) {
+  .topic-card {
+    width: 90%;
+  }
+
+  .topic-img {
+    height: 70%
+  }
+
+  .topic-card-bot {
+    height: 30%;
+  }
+}
+
+@media screen and (min-width: 676px) {
+  .topic-card {
+    width: 75%
+  }
+
+  .topic-img {
+    height: 80%
+  }
+
+  .topic-card-bot {
+    height: 20%;
+  }
 }
 </style>

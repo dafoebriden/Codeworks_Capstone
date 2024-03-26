@@ -7,7 +7,7 @@ class TagsService {
 
     async getTags(query) {
         const pageNumber = parseInt(query.page) || 1
-        const tagLimit = 20
+        const tagLimit = 10
         const skipNumber = (pageNumber - 1) * tagLimit
         const tagQuery = new TagQuery(query)
         const tags = await dbContext.Tags
