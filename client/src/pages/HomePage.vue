@@ -40,19 +40,11 @@
               <input v-model="tagSearchData" type="text" class="form-control searchBar text-white bar-tag bg-dark"
                 placeholder="Search Tags" style="max-width: 250px;">
             </div>
-            <div class="col-md-3 d-flex align-items-center">
-              <div class="dropdown">
-                <button class="form-control dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  Add Tags
-                </button>
-                <ul class="dropdown-menu tags-dropdown" style="max-height: 250px; overflow: auto;">
-                  <div @click="searchForTag(tag.id)" v-for="tag in tags" :key="tag.id" class=" p-0" href="#">
-                    <div class=" dropdown-item dropdown-tags selectable" role="button">
-                      {{ tag.name }}{{ tag.emoji }}
-                    </div>
-                  </div>
-                </ul>
+            <div class="d-flex tags-dropdown">
+              <div @click="searchForTag(tag.id)" v-for="tag in tags" :key="tag.id" class=" p-0" href="#">
+                <div class="dropdown-tags selectable" role="button">
+                  {{ tag.name }}{{ tag.emoji }}
+                </div>
               </div>
             </div>
             <!-- <div class="d-flex" style="flex-wrap: wrap;">
@@ -537,6 +529,10 @@ export default {
   background-color: black;
   box-shadow: 0px 0px 10px white;
   border: 1px solid white;
+  flex-wrap: wrap;
+  padding-left: 3px;
+  padding: 3px;
+  max-height: 250px;
 }
 
 .tags-dropdown::-webkit-scrollbar {
@@ -547,11 +543,16 @@ export default {
   color: white;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
+  margin-left: 3px;
+  margin: 1px
 }
 
 .dropdown-tags:hover {
   color: black;
   background-color: white;
+  text-shadow: 0px 0px 3px white;
+  border: 1px solid white;
+  margin-left: 2px;
 }
 
 .searchBar::-webkit-input-placeholder {
@@ -585,5 +586,11 @@ export default {
   .topic-card-bot {
     height: 20%;
   }
+}
+
+@media screen and (min-width: 676px) {
+  .tags-dropdown {}
+
+  .dropdown-tags {}
 }
 </style>
