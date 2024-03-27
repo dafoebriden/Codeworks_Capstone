@@ -12,7 +12,9 @@
                 <div class="m-3 form-tag" v-for="topicTag in topic.topicTags" :key="topicTag.id">
                     <div>
                         <p class="form-tag-top m-0">{{ topicTag.tag.emoji }}</p>
-                        <p class="form-tag-bot m-0">{{ topicTag.tag.name }}</p>
+                    </div>
+                    <div class="form-tag-bot m-0">
+                        <p class=" m-0">{{ topicTag.tag.name }}</p>
                     </div>
                 </div>
             </div>
@@ -102,7 +104,7 @@
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content bg-black text-white">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">New Discussion</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -301,7 +303,7 @@ export default {
 .form-tag-top {
     background-color: black;
     color: white;
-    height: 65%;
+    height: 70%;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     font-size: xx-large;
@@ -310,13 +312,14 @@ export default {
 .form-tag-bot {
     background-color: white;
     color: black;
-    height: 35%;
+    height: 30%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: x-small;
 }
 
 .comment-body {
