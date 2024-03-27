@@ -18,20 +18,7 @@
           </div>
         </div>
 
-        <div class="d-flex" style="flex-wrap:wrap ;">
-          <div v-for="tag in activeTags" :key="tag.id">
-            <div @click="deleteSearchForTag(tag.id)" class="tag selectable" role="button">
-              <div class="tag-top">
-                <p class="m-0">{{ tag.emoji }}</p>
-              </div>
-              <div class="tag-bot">
-                <p class="m-0">{{ tag.name }}</p>
-                <!-- <button v-if="" @click="deleteTag(tag.id)" class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                </button> -->
-              </div>
-            </div>
-          </div>
-        </div>
+
         <!-- NOTE Tags -->
         <div class="d-flex flex-wrap justify-content-evenly tags-container">
           <div class="mb-3">
@@ -41,27 +28,24 @@
                 placeholder="Search Tags" style="max-width: 250px;">
             </div>
             <div class="d-flex tags-dropdown">
-              <div @click="searchForTag(tag.id)" v-for="tag in tags" :key="tag.id" class=" p-0" href="#">
-                <div class="dropdown-tags selectable" role="button">
-                  {{ tag.name }}{{ tag.emoji }}
-                </div>
+              <div @click="searchForTag(tag.id)" v-for="tag in tags" :key="tag.id" class="dropdown-tags" role="button">
+                {{ tag.name }}{{ tag.emoji }}
               </div>
             </div>
-            <!-- <div class="d-flex" style="flex-wrap: wrap;">
-              <div v-for="tag in tags" :key="tag.id">
-                <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
+            <div class="d-flex" style="flex-wrap:wrap ;">
+              <div v-for="tag in activeTags" :key="tag.id">
+                <div @click="deleteSearchForTag(tag.id)" class="tag selectable" role="button">
                   <div class="tag-top">
                     <p class="m-0">{{ tag.emoji }}</p>
                   </div>
                   <div class="tag-bot">
                     <p class="m-0">{{ tag.name }}</p>
-                    // <button v-if="account.id" @click="deleteTag(tag.id)"
-                      // class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                    // </button>
+                    <!-- <button v-if="" @click="deleteTag(tag.id)" class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
+                </button> -->
                   </div>
                 </div>
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -87,7 +71,7 @@
               </div>
             </div>
             <div class="topic-card-bot">
-              <div class="ms-3">
+              <div class="mx-3">
                 <h1 class="mb-0">{{ topic.title }}</h1>
                 <p>{{ topic.quote }}</p>
               </div>
@@ -393,17 +377,18 @@ export default {
 }
 
 .main-page {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tag {
   border-radius: 10px;
   box-shadow: 0px 0px 10px white;
-  width: 100px;
-  height: 100px;
+  width: 55px;
+  height: 55px;
   margin-left: 8px;
   margin-right: 8px;
-  margin-bottom: 16px;
+  margin-top: 16px;
   text-align: center;
 }
 
@@ -413,7 +398,7 @@ export default {
   height: 70%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  font-size: xxx-large;
+  font-size: x-large;
 }
 
 .tag-bot {
@@ -428,6 +413,7 @@ export default {
   align-items: center;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
+  font-size: xx-small;
 }
 
 .form-tag {
@@ -465,15 +451,15 @@ export default {
 
 .topic-tag {
   border-radius: 10px;
-  box-shadow: 0px 0px 10px black;
-  width: 30px;
-  height: 30px;
+  box-shadow: 0px 0px 10px white;
+  width: 40px;
+  height: 40px;
   text-align: center;
   font-weight: bold;
   background-color: black;
   color: white;
   border-radius: 10px;
-  font-size: large;
+  font-size: x-large;
 }
 
 .topic-card {
@@ -530,8 +516,6 @@ export default {
   box-shadow: 0px 0px 10px white;
   border: 1px solid white;
   flex-wrap: wrap;
-  padding-left: 3px;
-  padding: 3px;
   max-height: 250px;
 }
 
@@ -543,16 +527,14 @@ export default {
   color: white;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
-  margin-left: 3px;
-  margin: 1px
+  margin: 1px;
+  padding: 2px;
+  margin-left: 10px
 }
 
 .dropdown-tags:hover {
   color: black;
-  background-color: white;
-  text-shadow: 0px 0px 3px white;
-  border: 1px solid white;
-  margin-left: 2px;
+  text-shadow: 0px 0px 5px white;
 }
 
 .searchBar::-webkit-input-placeholder {
