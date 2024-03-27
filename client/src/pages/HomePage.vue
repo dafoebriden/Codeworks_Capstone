@@ -425,6 +425,7 @@ export default {
   font-weight: bold;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
+  margin-top: 10px;
 }
 
 .form-tag-top {
@@ -447,6 +448,7 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  font-size: x-small;
 }
 
 .topic-tag {

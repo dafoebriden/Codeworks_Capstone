@@ -1,28 +1,25 @@
 <template>
     <div v-if="topic" class="container-fluid">
         <div class="row topic-header-top" :style="{ backgroundImage: `url(${topic.picture})` }">
-            <div class="col-12 col-md-7 ">
+            <div class="col-8 ">
                 <div class="">
                     <i>
                         <h1 class="display-1 fw-bolder">{{ topic.title }}</h1>
                     </i>
                 </div>
             </div>
-            <div class="col-12 col-md-6 d-flex">
-                <div class="m-3 form-tag" v-for="topicTag in topic.topicTags" :key="topicTag.id">
+            <div class="col-4 d-flex justify-content-end p-0">
+                <div class="m-2 topic-tag " v-for="topicTag in topic.topicTags" :key="topicTag.id">
                     <div>
-                        <p class="form-tag-top m-0">{{ topicTag.tag.emoji }}</p>
-                    </div>
-                    <div class="form-tag-bot m-0">
-                        <p class=" m-0">{{ topicTag.tag.name }}</p>
+                        <p class="m-0">{{ topicTag.tag.emoji }}</p>
                     </div>
                 </div>
             </div>
-            <div class=" col-12 topic-header-bot">
-                <i>
-                    <p>{{ topic.quote }}</p>
-                </i>
-            </div>
+        </div>
+        <div class="col-12 topic-header-bot">
+            <i>
+                <p>{{ topic.quote }}</p>
+            </i>
         </div>
         <div class="row d-flex justify-content-center">
             <div class="col-12 d-flex justify-content-end pt-3 pe-3">
@@ -240,7 +237,7 @@ export default {
 .topic-header-top {
     padding: 0px;
     min-height: 30vw;
-    width: 100%;
+    width: 100vw;
     background-size: cover;
     background-position: center;
     box-shadow: inset 0px 0px 10px 4px black;
@@ -291,36 +288,19 @@ export default {
     margin-bottom: 20px;
 }
 
-.form-tag {
+.topic-tag {
     border-radius: 10px;
-    box-shadow: 0px 0px 10px black;
-    width: 70px;
-    height: 70px;
+    box-shadow: 0px 0px 10px white;
+    width: 30px;
+    height: 30px;
     text-align: center;
     font-weight: bold;
-}
-
-.form-tag-top {
     background-color: black;
     color: white;
-    height: 70%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    font-size: xx-large;
+    border-radius: 10px;
+    font-size: large;
 }
 
-.form-tag-bot {
-    background-color: white;
-    color: black;
-    height: 30%;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: x-small;
-}
 
 .comment-body {
     border: 1px solid white;
