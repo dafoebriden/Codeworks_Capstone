@@ -3,63 +3,55 @@
     <div class="row height home-page-no-scroll small-screen">
       <!-- NOTE Side-Bar -->
       <div class="col-11 col-lg-2 bar p-0 d-flex flex-column">
-
-        <div class="text-end">
-          <button v-if="account.id" type="button" class="bar-tag bg-success mb-4" data-bs-toggle="modal"
-            data-bs-target="#newTag" style="max-width: 100px;">
-            New Tag
-          </button>
-        </div>
-        <div class="d-flex" style="flex-wrap:wrap ;">
-          <div v-for="tag in activeTags" :key="tag.id">
-            <div @click="deleteSearchForTag(tag.id)" class="tag selectable" role="button">
-              <div class="tag-top">
-                <p class="m-0">{{ tag.emoji }}</p>
-              </div>
-              <div class="tag-bot">
-                <p class="m-0">{{ tag.name }}</p><button v-if="account.id" @click="deleteTag(tag.id)"
-                  class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                </button>
-              </div>
-            </div>
-
+        <div class="d-flex justify-content-end">
+          <div class=" text-end">
+            <button v-if="account.id" type="button" class="bar-tag bg-success m-1" data-bs-toggle="modal"
+              data-bs-target="#newTopic">
+              New Topic
+            </button>
+          </div>
+          <div class="text-end">
+            <button v-if="account.id" type="button" class="bar-tag bg-success m-1" data-bs-toggle="modal"
+              data-bs-target="#newTag" style="max-width: 100px;">
+              New Tag
+            </button>
           </div>
         </div>
+
+
         <!-- NOTE Tags -->
         <div class="d-flex flex-wrap justify-content-evenly tags-container">
           <div class="mb-3">
-            <div class="mb-3 input-group p-3">
+            <div class="m-0 input-group p-2">
               <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
               <input v-model="tagSearchData" type="text" class="form-control searchBar text-white bar-tag bg-dark"
                 placeholder="Search Tags" style="max-width: 250px;">
             </div>
-            <div class="d-flex" style="flex-wrap: wrap;">
-              <div v-for="tag in tags" :key="tag.id">
-                <div @click="searchForTag(tag.id)" class="tag selectable" role="button">
+            <div class="d-flex tags-dropdown">
+              <div @click="searchForTag(tag.id)" v-for="tag in tags" :key="tag.id" class="dropdown-tags" role="button">
+                {{ tag.name }}{{ tag.emoji }}
+              </div>
+            </div>
+            <div class="d-flex" style="flex-wrap:wrap ;">
+              <div v-for="tag in activeTags" :key="tag.id">
+                <div @click="deleteSearchForTag(tag.id)" class="tag selectable" role="button">
                   <div class="tag-top">
                     <p class="m-0">{{ tag.emoji }}</p>
                   </div>
                   <div class="tag-bot">
-                    <p class="m-0">{{ tag.name }}</p><button v-if="account.id" @click="deleteTag(tag.id)"
-                      class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
-                    </button>
+                    <p class="m-0">{{ tag.name }}</p>
+                    <!-- <button v-if="" @click="deleteTag(tag.id)" class="bar-tag bg-danger m-2" style="width: 25px; height: 15px;">
+                </button> -->
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
       <!-- NOTE Main Page -->
       <div class="col-11 col-lg-10 ">
         <div class="row d-flex main-page justify-content-evenly">
-          <div class="col-12 text-end">
-            <button v-if="account.id" type="button" class="bar-tag bg-success" data-bs-toggle="modal"
-              data-bs-target="#newTopic">
-              New Topic
-            </button>
-          </div>
           <!-- NOTE Topics -->
           <div @click="getTopic(topic.id)" class="topic-card selectable" role="button" v-for="topic in topics"
             :key="topic.id">
@@ -79,20 +71,19 @@
               </div>
             </div>
             <div class="topic-card-bot">
-              <div class="ms-3">
+              <div class="mx-3">
                 <h1 class="mb-0">{{ topic.title }}</h1>
                 <p>{{ topic.quote }}</p>
               </div>
             </div>
           </div>
         </div>
-
       </div>
       <!-- NOTE Create Tag Form -->
       <div class="modal fade" id="newTag" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="newTagLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
+          <div class="modal-content bg-black text-white">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="newTagLabel">New Tag</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -386,17 +377,18 @@ export default {
 }
 
 .main-page {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tag {
   border-radius: 10px;
   box-shadow: 0px 0px 10px white;
-  width: 100px;
-  height: 100px;
+  width: 55px;
+  height: 55px;
   margin-left: 8px;
   margin-right: 8px;
-  margin-bottom: 16px;
+  margin-top: 16px;
   text-align: center;
 }
 
@@ -406,7 +398,7 @@ export default {
   height: 70%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  font-size: xxx-large;
+  font-size: x-large;
 }
 
 .tag-bot {
@@ -421,6 +413,7 @@ export default {
   align-items: center;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
+  font-size: xx-small;
 }
 
 .form-tag {
@@ -432,6 +425,7 @@ export default {
   font-weight: bold;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
+  margin-top: 10px;
 }
 
 .form-tag-top {
@@ -454,24 +448,25 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  font-size: x-small;
 }
 
 .topic-tag {
   border-radius: 10px;
-  box-shadow: 0px 0px 10px black;
-  width: 30px;
-  height: 30px;
+  box-shadow: 0px 0px 10px white;
+  width: 40px;
+  height: 40px;
   text-align: center;
   font-weight: bold;
   background-color: black;
   color: white;
   border-radius: 10px;
-  font-size: large;
+  font-size: x-large;
 }
 
 .topic-card {
-  width: 300px;
-  height: 300px;
+  width: 95%;
+  height: 500px;
   margin-top: 25px;
   margin-bottom: 25px;
   margin-right: 25px;
@@ -482,8 +477,8 @@ export default {
 }
 
 .topic-img {
-  height: 40%;
-  object-position: center;
+  height: 65%;
+  background-size: cover;
   width: 100%;
   border-top: 1px solid black;
   border-left: 1px solid black;
@@ -494,7 +489,7 @@ export default {
 }
 
 .topic-card-bot {
-  height: 60%;
+  height: 35%;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   background-color: black;
@@ -522,6 +517,8 @@ export default {
   background-color: black;
   box-shadow: 0px 0px 10px white;
   border: 1px solid white;
+  flex-wrap: wrap;
+  max-height: 250px;
 }
 
 .tags-dropdown::-webkit-scrollbar {
@@ -532,15 +529,52 @@ export default {
   color: white;
   font-family: "Hanalei Fill", system-ui;
   font-weight: 400;
+  margin: 1px;
+  padding: 2px;
+  margin-left: 10px
 }
 
 .dropdown-tags:hover {
   color: black;
-  background-color: white;
+  text-shadow: 0px 0px 5px white;
 }
 
 .searchBar::-webkit-input-placeholder {
   color: white;
   font-style: italic;
+}
+
+@media screen and (min-width: 468px) {
+  .topic-card {
+    width: 90%;
+  }
+
+  .topic-img {
+    height: 70%
+  }
+
+  .topic-card-bot {
+    height: 30%;
+  }
+}
+
+@media screen and (min-width: 676px) {
+  .topic-card {
+    width: 75%
+  }
+
+  .topic-img {
+    height: 80%
+  }
+
+  .topic-card-bot {
+    height: 20%;
+  }
+}
+
+@media screen and (min-width: 676px) {
+  .tags-dropdown {}
+
+  .dropdown-tags {}
 }
 </style>
