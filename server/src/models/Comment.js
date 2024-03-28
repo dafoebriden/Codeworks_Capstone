@@ -5,7 +5,10 @@ export const CommentsSchema = new Schema(
         body: { type: String, minlength: 1, maxlength: 5000, required: true },
         picture: { type: String, maxlength: 1000 },
         creatorId: { type: Schema.ObjectId, ref: 'Account', required: true },
-        discussionId: { type: Schema.ObjectId, ref: 'Discussion', required: true }
+        discussionId: { type: Schema.ObjectId, ref: 'Discussion', required: true },
+        replyId: { type: Schema.ObjectId, ref: 'Comment' },
+        likes: { type: Number },
+        dislikes: { type: Number }
     }, { timestamps: true, toJSON: { virtuals: true } }
 )
 CommentsSchema.virtual('creator', {
@@ -13,6 +16,11 @@ CommentsSchema.virtual('creator', {
     foreignField: '_id',
     justOne: true,
     ref: 'Account'
+})
+CommentsSchema.virtual('replies', {
+    localField: '_id',
+    foreignField: 'replyId',
+    ref: 'Comment'
 })
 export class CommentQuery {
     constructor(queryObject) {

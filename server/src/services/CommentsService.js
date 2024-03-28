@@ -26,7 +26,7 @@ class CommentsService {
             .skip(skipNumber)
             .sort({ updatedAt: 'descending' })
             .populate('creator')
-
+            .populate('replies')
         const commentCount = await dbContext.Comments.countDocuments(commentQuery)
         const responseObject = {
             comments: comments,
@@ -41,7 +41,7 @@ class CommentsService {
         return com
     }
     async getCommentsForDiscussion(discussionId) {
-        const com = await dbContext.Comments.find({ discussionId }).populate('creator')
+        const com = await dbContext.Comments.find({ discussionId }).populate('creator').populate('replies')
         return com
     }
     async editComment(comData, id, accountId) {
@@ -50,6 +50,8 @@ class CommentsService {
         if (com.creatorId != accountId) { throw new Forbidden(`That's not yours, give it back you thief!`) }
         com.body = comData.description || com.body
         com.picture = comData.picture || com.picture
+        com.likes = comData.likes || com.likes
+        com.dislikes = comData.dislikes || com.dislikes
         await com.save()
         return com
     }

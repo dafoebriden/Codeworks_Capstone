@@ -9,7 +9,7 @@ class DiscussionsService {
             .populate({
                 path: 'comments',
                 populate: {
-                    path: 'creator'
+                    path: 'creator replies'
                 }
             })
         return dis
@@ -29,7 +29,7 @@ class DiscussionsService {
                 path: 'comments',
                 options: { limit: 1 },
                 populate: {
-                    path: 'creator'
+                    path: 'creator replies'
                 }
             })
 
