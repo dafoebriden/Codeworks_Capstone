@@ -43,10 +43,58 @@
                                 <img class="rounded-circle img-fluid" :src="comment.creator.picture"
                                     style="height:25px; width: 25px;">
                             </div>
-                            <div class=" ms-2 comment-body d-flex flex-wrap">
+                            <div class=" ms-2 comment-body d-flex flex-column">
                                 <p class="m-0">{{ comment.body }}</p>
                                 <div v-if="comment.picture" class="comment-picture">
                                     <img class="img-fluid" :src="comment.picture">
+                                </div>
+                                <div class="replies" v-if="!comment.open">
+                                    <div v-for="reply in comment.replies" :key="reply.id">
+                                    <p class="reply-body">{{reply.body}}</p>
+                                    </div>
+                                </div>
+                                <!-- NOTE reply form dropdown -->
+                                <div v-if="comment.replies.length == 0" class="dropdown m-0 p-0">
+                                    <p class="reply-button dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false" style="width: fit-content;">reply</p>
+                                    <ul class="dropdown-menu dropdown-menu-end p-0">
+                                        <div>
+                                            <form @submit.prevent="createReply(replyData, comment.id, discussion.id)"
+                                                class="d-flex align-items-center bg-black ps-2 m-0"
+                                                style="height: fit-content; border: 1px solid white;">
+                                                <div class=" input-group justify-content-end">
+                                                    <textarea v-model="replyData.body" type="text" rows="1"
+                                                        class=" invalid ps-2 bg-black text-white input-white" id="body"
+                                                        aria-describedby="body" placeholder=" Reply" required
+                                                        style="border: none; border: 1px solid white;"></textarea>
+                                                    <span class="input-group-text m-0 p-0 bg-black " id="body">
+                                                        <div class="dropdown m-0 p-0">
+                                                            <button class="btn btn-secondary dropdown-toggle"
+                                                                type="button" data-bs-toggle="dropdown"
+                                                                aria-expanded="false" style="padding: 2px;">
+                                                                📸
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-start p-0">
+                                                                <div>
+                                                                    <input v-model="replyData.picture" type="text"
+                                                                        class=" ps-2 bg-black text-white input-white invalid "
+                                                                        id="picture" minlength="5" maxlength="1000"
+                                                                        placeholder="url"
+                                                                        style="border: none; width: 80%; border: 1px solid white;width: 200px">
+                                                                </div>
+                                                            </ul>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                                <button type="submit" class="bar-tag bg-success m-2">Reply
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </ul>
+                                </div>
+                                <!-- NOTE replies count and dropdown -->
+                                <div v-if="comment.replies.length && comment.open">
+                                    <p class="reply-button" role="button">{{comment.replies.length}} <span v-if="comment.replies.length == 1">reply</span><span v-if="comment.replies.length >= 2">replies</span></p>
                                 </div>
                             </div>
                         </div>
@@ -54,28 +102,24 @@
                     <div v-if="account.id">
                         <form @submit.prevent="createComment(discussion.id, commentData)"
                             class="d-flex align-items-center">
-                            <div class="input-group">
+                            <div class="input-group justify-content-end">
                                 <textarea v-model="commentData.body" type="text" rows="1"
-                                    class="form-control invalid ms-2" id="body" aria-describedby="body"
-                                    placeholder=" Comment" required>
-                                </textarea>
-                                <span class="input-group-text m-0 p-0" id="body">
+                                    class=" invalid ps-2 bg-black text-white input-white" id="body"
+                                    aria-describedby="body" placeholder=" Comment" required
+                                    style="border: none; width: 80%; border: 1px solid white;">
+                            </textarea>
+                                <span class="input-group-text m-0 p-0 bg-black " id="body">
                                     <div class="dropdown m-0 p-0">
                                         <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="padding: 2px;">
                                             📸
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-start p-0">
                                             <div>
                                                 <input v-model="commentData.picture" type="text"
-                                                    class="form-control invalid " id="picture" minlength="5"
-                                                    maxlength="1000" placeholder="url" style="width: 200px;">
-                                                <!-- <div id="pictureFeedback" class="invalid-feedback">
-                                                    Please choose a picture.
-                                                </div>
-                                                <div class="valid-feedback">
-                                                    Looks good!
-                                                </div> -->
+                                                    class=" ps-2 bg-black text-white input-white invalid " id="picture"
+                                                    minlength="5" maxlength="1000" placeholder="url"
+                                                    style="border: none; width: 80%; border: 1px solid white;width: 200px">
                                             </div>
                                         </ul>
                                     </div>
@@ -89,6 +133,7 @@
 
                         <!-- TODO -->
                         <!-- <button @click="editDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
+                    </div>
                         </button> -->
                         <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-danger m-2">Delete
                         </button>
@@ -98,6 +143,7 @@
 
         </div>
     </div>
+    <!-- NOTE New Discussion Form Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -145,16 +191,15 @@ import { computed, onMounted } from 'vue';
 import { discussionsService } from '../services/DiscussionsService';
 import { commentsService } from '../services/CommentsService';
 import { topicsService } from '../services/TopicsService';
+import { repliesService } from '../services/RepliesService';
 import { AppState } from '../AppState';
-import { logger } from '../utils/Logger';
-import { formToJSON } from 'axios';
-import { reference } from '@popperjs/core';
 // import { tagsService } from '../services/TagsService';
 
 export default {
     setup() {
         const editableDiscussionData = { title: '', picture: '', description: '' }
         const commentData = { picture: '', body: '', discussionId: '' }
+        const replyData = { picture: '', body: '', commentId:''}
         const route = useRoute()
         onMounted(() => {
             getTopic()
@@ -190,6 +235,7 @@ export default {
         async function createComment(id, commentData) {
             try {
                 commentData.discussionId = id
+                
                 const com = await commentsService.createComment(commentData)
                 this.commentData = {}
                 return com
@@ -197,11 +243,22 @@ export default {
                 Pop.error(error)
             }
         }
+        async function createReply(data, commentId, disId){
+            try {
+                data.commentId = commentId
+                const reply = await repliesService.createReply(data, disId)
+                return reply
+            } catch (error) {
+                Pop.error(error)
+            }
+        }
         return {
             editableDiscussionData,
             commentData,
+            replyData,
             createDiscussion,
             createComment,
+            createReply,
             account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
             discussions: computed(() => AppState.discussions),
@@ -305,7 +362,10 @@ export default {
 .comment-body {
     border: 1px solid white;
     width: 100%;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 5px;
     color: white;
     margin: 5px;
 }
@@ -323,5 +383,26 @@ export default {
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     margin-right: 10px;
+}
+
+.reply-button {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    font-size: x-small;
+    font-style: italic;
+}
+
+.reply-button:hover {
+    text-shadow: 0px 0px 5px white
+}
+
+.input-white::-webkit-input-placeholder {
+    color: white;
+}
+.reply-body{
+    margin-bottom: 2px;
+    padding: 2px;
+    font-size:small;
+    font-style: italic;
 }
 </style>

@@ -8,6 +8,7 @@ class DiscussionsService {
             .populate('creator')
             .populate({
                 path: 'comments',
+                options: { sort: { 'createdAt': -1 }, limit: 3 },
                 populate: {
                     path: 'creator replies'
                 }
@@ -27,7 +28,7 @@ class DiscussionsService {
             .populate('creator')
             .populate({
                 path: 'comments',
-                options: { limit: 1 },
+                options: { limit: 3 },
                 populate: {
                     path: 'creator replies'
                 }

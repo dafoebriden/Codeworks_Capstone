@@ -257,7 +257,7 @@ export default {
     async function getTopic(id) {
       try {
         router.push(`/topics/${id}`)
-        await topicsService.getTopic(id)
+        // await topicsService.getTopic(id)
       } catch (error) {
         Pop.error(error)
       }
