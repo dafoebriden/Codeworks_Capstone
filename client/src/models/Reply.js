@@ -7,7 +7,8 @@ export class Reply{
         this.commentId = data.commentId
         this.creator = data.creator
         this.likes = data.likes
-        this.dislikes = data.dislikes
+        this.thumbsDown = data.thumbsDown
+        this.thumbsUp = data.thumbsUp
         this.replies = data.replies
     }
 }

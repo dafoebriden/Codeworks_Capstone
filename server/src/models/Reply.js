@@ -7,7 +7,8 @@ export const RepliesSchema = new Schema(
         creatorId: { type: Schema.ObjectId, ref: 'Account', required: true },
         commentId: { type: Schema.ObjectId, ref: 'Comment', required: true },
         likes: { type: Number },
-        dislikes: { type: Number }
+        thumbsDown: { type: Number },
+        thumbsUp: { type: Number }
     }, { timestamps: true, toJSON: { virtuals: true } }
 )
 RepliesSchema.virtual('creator', {

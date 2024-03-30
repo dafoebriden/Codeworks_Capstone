@@ -1,3 +1,4 @@
+import { populate } from "dotenv"
 import { dbContext } from "../db/DbContext.js"
 import { DiscussionQuery } from "../models/Discussion.js"
 import { Forbidden } from "../utils/Errors.js"
@@ -9,9 +10,7 @@ class DiscussionsService {
             .populate({
                 path: 'comments',
                 options: { sort: { 'createdAt': -1 }, limit: 3 },
-                populate: {
-                    path: 'creator replies'
-                }
+                populate: { path: 'creator recipes' }
             })
         return dis
     }

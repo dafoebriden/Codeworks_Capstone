@@ -48,15 +48,38 @@
                                 <div v-if="comment.picture" class="comment-picture">
                                     <img class="img-fluid" :src="comment.picture">
                                 </div>
-                                <div class="replies" v-if="!comment.open">
+                                <p class="m-0"><span :title="comment.likes || 0"><i
+                                            class="mdi mdi-heart-outline"></i></span> <span
+                                        :title="comment.thumbsUp || 0"><i class="mdi mdi-thumb-up-outline"></i></span>
+                                    <span :title="comment.thumbsDown || 0"><i
+                                            class="mdi mdi-thumb-down-outline"></i></span>
+                                </p>
+                                <div class="replies" v-if="comment.open">
                                     <div v-for="reply in comment.replies" :key="reply.id">
-                                    <p class="reply-body">{{reply.body}}</p>
+                                        <!-- <div>
+                                            <img :src="reply.creator.img" style="height:15px; width: 15px;">
+                                        </div> -->
+                                        <div class="reply-body">
+                                            <p class="m-0">{{ reply.body }}</p>
+                                            <p class="m-0"><span title="{{reply.likes}} likes || 0 likes"><i
+                                                        class="mdi mdi-heart-outline"></i></span> <span
+                                                    :title="reply.thumbsUp || 0"><i
+                                                        class="mdi mdi-thumb-up-outline"></i></span> <span
+                                                    :title="reply.thumbsDown || 0"><i
+                                                        class="mdi mdi-thumb-down-outline"></i></span></p>
+                                        </div>
+
+
                                     </div>
+
+
                                 </div>
                                 <!-- NOTE reply form dropdown -->
-                                <div v-if="comment.replies.length == 0" class="dropdown m-0 p-0">
+                                <div v-if="comment.replies.length == 0 || comment.open" class="dropdown m-0 p-0">
                                     <p class="reply-button dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                        aria-expanded="false" style="width: fit-content;">reply</p>
+                                        data-bs-auto-close="outside" aria-expanded="false" style="width: fit-content;">
+                                        reply
+                                    </p>
                                     <ul class="dropdown-menu dropdown-menu-end p-0">
                                         <div>
                                             <form @submit.prevent="createReply(replyData, comment.id, discussion.id)"
@@ -64,14 +87,14 @@
                                                 style="height: fit-content; border: 1px solid white;">
                                                 <div class=" input-group justify-content-end">
                                                     <textarea v-model="replyData.body" type="text" rows="1"
-                                                        class=" invalid ps-2 bg-black text-white input-white" id="body"
-                                                        aria-describedby="body" placeholder=" Reply" required
+                                                        class=" invalid ps-2 bg-black text-white input-white no-scrollbar"
+                                                        id="body" aria-describedby="body" placeholder=" Reply" required
                                                         style="border: none; border: 1px solid white;"></textarea>
                                                     <span class="input-group-text m-0 p-0 bg-black " id="body">
                                                         <div class="dropdown m-0 p-0">
-                                                            <button class="btn btn-secondary dropdown-toggle"
-                                                                type="button" data-bs-toggle="dropdown"
-                                                                aria-expanded="false" style="padding: 2px;">
+                                                            <button class="form-img-dropdown" type="button"
+                                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                                style="padding: 2px;">
                                                                 📸
                                                             </button>
                                                             <ul class="dropdown-menu dropdown-menu-start p-0">
@@ -92,9 +115,16 @@
                                         </div>
                                     </ul>
                                 </div>
+                                <div v-if="comment.open" class="d-flex justify-content-end">
+                                    <p @click="comment.open = false" role="button" class="m-0 text-white"
+                                        style="width: fit-content;">X
+                                    </p>
+                                </div>
                                 <!-- NOTE replies count and dropdown -->
-                                <div v-if="comment.replies.length && comment.open">
-                                    <p class="reply-button" role="button">{{comment.replies.length}} <span v-if="comment.replies.length == 1">reply</span><span v-if="comment.replies.length >= 2">replies</span></p>
+                                <div @click="comment.open = true" v-if="comment.replies.length && !comment.open">
+                                    <p class="reply-button" role="button">{{ comment.replies.length }} <span
+                                            v-if="comment.replies.length == 1">reply</span><span
+                                            v-if="comment.replies.length >= 2">replies</span></p>
                                 </div>
                             </div>
                         </div>
@@ -104,13 +134,13 @@
                             class="d-flex align-items-center">
                             <div class="input-group justify-content-end">
                                 <textarea v-model="commentData.body" type="text" rows="1"
-                                    class=" invalid ps-2 bg-black text-white input-white" id="body"
+                                    class=" invalid ps-2 bg-black text-white input-white no-scrollbar" id="body"
                                     aria-describedby="body" placeholder=" Comment" required
                                     style="border: none; width: 80%; border: 1px solid white;">
                             </textarea>
                                 <span class="input-group-text m-0 p-0 bg-black " id="body">
                                     <div class="dropdown m-0 p-0">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        <button class="form-img-dropdown" data-bs-auto-close="outside" type="button"
                                             data-bs-toggle="dropdown" aria-expanded="false" style="padding: 2px;">
                                             📸
                                         </button>
@@ -187,7 +217,7 @@
 <script>
 import { useRoute } from 'vue-router';
 import Pop from '../utils/Pop';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { discussionsService } from '../services/DiscussionsService';
 import { commentsService } from '../services/CommentsService';
 import { topicsService } from '../services/TopicsService';
@@ -197,9 +227,9 @@ import { AppState } from '../AppState';
 
 export default {
     setup() {
-        const editableDiscussionData = { title: '', picture: '', description: '' }
-        const commentData = { picture: '', body: '', discussionId: '' }
-        const replyData = { picture: '', body: '', commentId:''}
+        const editableDiscussionData = ref({ title: '', picture: '', description: '' })
+        const commentData = ref({ picture: '', body: '', discussionId: '' })
+        const replyData = ref({ picture: '', body: '' })
         const route = useRoute()
         onMounted(() => {
             getTopic()
@@ -225,8 +255,6 @@ export default {
             try {
                 disData.topicId = route.params.id
                 const dis = await discussionsService.createDiscussion(disData)
-                this.editableDiscussionData = {}
-                disData = {}
                 return dis
             } catch (error) {
                 Pop.error(error)
@@ -235,15 +263,13 @@ export default {
         async function createComment(id, commentData) {
             try {
                 commentData.discussionId = id
-                
                 const com = await commentsService.createComment(commentData)
-                this.commentData = {}
                 return com
             } catch (error) {
                 Pop.error(error)
             }
         }
-        async function createReply(data, commentId, disId){
+        async function createReply(data, commentId, disId) {
             try {
                 data.commentId = commentId
                 const reply = await repliesService.createReply(data, disId)
@@ -399,10 +425,27 @@ export default {
 .input-white::-webkit-input-placeholder {
     color: white;
 }
-.reply-body{
-    margin-bottom: 2px;
-    padding: 2px;
-    font-size:small;
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none
+}
+
+.replies {
+    margin-left: 20px;
+}
+
+.reply-body {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding-left: 3px;
+    font-size: small;
     font-style: italic;
+    border: 1px solid white;
+}
+
+.form-img-dropdown {
+    background: black;
+    border: none;
+    border-radius: 5px;
 }
 </style>

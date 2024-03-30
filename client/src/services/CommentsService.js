@@ -1,3 +1,4 @@
+import App from "../App.vue"
 import { AppState } from "../AppState"
 import { Comment } from "../models/Comment"
 import { logger } from "../utils/Logger"
@@ -16,11 +17,11 @@ class CommentsService{
             if(!AppState.account.id){ Pop.error('Please log in to create a new Comment')
             return
         }
+            
             const res = await api.post('api/comments', commentData)
             Pop.success('You just Commented')
             logger.log('comment data:', res.data)
-            const discussion = AppState.discussions.find(dis=> dis.id == commentData.discussionId)
-            discussion.comments.push(new Comment(res.data))
+            AppState.discussions.find(dis=> dis.id == commentData.discussionId).comments.push(new Comment(res.data))
             // discussion.comments.splice(-1, 0, new Comment(res.data))
         } catch (error) {
             Pop.error(error)
