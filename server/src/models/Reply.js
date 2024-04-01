@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Mongoose, Schema } from "mongoose";
 
 export const RepliesSchema = new Schema(
     {
@@ -6,9 +6,9 @@ export const RepliesSchema = new Schema(
         picture: { type: String, maxlength: 1000 },
         creatorId: { type: Schema.ObjectId, ref: 'Account', required: true },
         commentId: { type: Schema.ObjectId, ref: 'Comment', required: true },
-        likes: { type: Number },
-        thumbsDown: { type: Number },
-        thumbsUp: { type: Number }
+        likes: [],
+        thumbsDown: [],
+        thumbsUp: []
     }, { timestamps: true, toJSON: { virtuals: true } }
 )
 RepliesSchema.virtual('creator', {

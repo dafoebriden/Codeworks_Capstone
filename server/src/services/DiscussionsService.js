@@ -10,7 +10,7 @@ class DiscussionsService {
             .populate({
                 path: 'comments',
                 options: { sort: { 'createdAt': -1 }, limit: 3 },
-                populate: { path: 'creator recipes' }
+                populate: { path: 'creator replies' }
             })
         return dis
     }

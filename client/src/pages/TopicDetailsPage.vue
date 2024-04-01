@@ -29,7 +29,7 @@
                 </button>
             </div>
             <div class="col-11  col-md-10 col-lg-9">
-                <div v-for="discussion in discussions" :key="discussion.id" class="discussions-card">
+                <div v-for="discussion in    discussions   " :key="discussion.id" class="discussions-card">
                     <div class="discussion-header-top" :style="{ backgroundImage: `url(${discussion.picture})` }">
                     </div>
                     <div class="discussion-header-bot">
@@ -37,7 +37,7 @@
                         <p>{{ discussion.description }}</p>
                     </div>
                     <div>
-                        <div class="d-flex align-items-center m-2" v-for="comment in discussion.comments"
+                        <div class="d-flex align-items-center m-2" v-for="comment in    discussion.comments   "
                             :key="comment.id">
                             <div>
                                 <img class="rounded-circle img-fluid" :src="comment.creator.picture"
@@ -48,31 +48,36 @@
                                 <div v-if="comment.picture" class="comment-picture">
                                     <img class="img-fluid" :src="comment.picture">
                                 </div>
-                                <p class="m-0"><span :title="comment.likes || 0"><i
-                                            class="mdi mdi-heart-outline"></i></span> <span
-                                        :title="comment.thumbsUp || 0"><i class="mdi mdi-thumb-up-outline"></i></span>
-                                    <span :title="comment.thumbsDown || 0"><i
-                                            class="mdi mdi-thumb-down-outline"></i></span>
+                                <p class="m-0"><span :title="comment.likes.length + ' Likes'"><i
+                                            @click="toggleCommentVote('like', comment.id)" role="button"
+                                            class="mdi mdi-heart-outline like"></i></span> <span
+                                        :title="comment.thumbsUp.length + ' Thumb Ups'"> <i
+                                            @click="toggleCommentVote('thumbUp', comment.id)" role="button"
+                                            class="mdi mdi-thumb-up-outline thumb"></i></span> <span
+                                        :title="comment.thumbsDown.length + ' Thumb Downs'"> <i
+                                            @click="toggleCommentVote('thumbDown', comment.id)" role="button"
+                                            class="mdi mdi-thumb-down-outline thumb"></i></span>
                                 </p>
                                 <div class="replies" v-if="comment.open">
-                                    <div v-for="reply in comment.replies" :key="reply.id">
+                                    <div v-for="reply in comment.replies   " :key="reply.id">
                                         <!-- <div>
                                             <img :src="reply.creator.img" style="height:15px; width: 15px;">
                                         </div> -->
                                         <div class="reply-body">
                                             <p class="m-0">{{ reply.body }}</p>
-                                            <p class="m-0"><span title="{{reply.likes}} likes || 0 likes"><i
-                                                        class="mdi mdi-heart-outline"></i></span> <span
-                                                    :title="reply.thumbsUp || 0"><i
-                                                        class="mdi mdi-thumb-up-outline"></i></span> <span
-                                                    :title="reply.thumbsDown || 0"><i
-                                                        class="mdi mdi-thumb-down-outline"></i></span></p>
+                                            <p class="m-0"><span :title="reply.likes.length + ' Likes'"><i
+                                                        @click="toggleReplyVote('like', reply.id, discussion.id)"
+                                                        role="button" class="mdi mdi-heart-outline like"></i></span>
+                                                <span :title="reply.thumbsUp.length + ' Thumb Ups'"><i
+                                                        @click="toggleReplyVote('thumbUp', reply.id, discussion.id)"
+                                                        role="button" class="mdi mdi-thumb-up-outline thumb"></i></span>
+                                                <span :title="reply.thumbsDown.length + 'Thumb Downs'"><i
+                                                        @click="toggleReplyVote('thumbDown', reply.id, discussion.id)"
+                                                        role="button"
+                                                        class="mdi mdi-thumb-down-outline thumb"></i></span>
+                                            </p>
                                         </div>
-
-
                                     </div>
-
-
                                 </div>
                                 <!-- NOTE reply form dropdown -->
                                 <div v-if="comment.replies.length == 0 || comment.open" class="dropdown m-0 p-0">
@@ -305,7 +310,35 @@ export default {
                 } catch (error) {
                     Pop.error(error)
                 }
+            },
+            async toggleReplyVote(vote, replyId, disId) {
+                try {
+                    let data = {}
+                    data.vote = vote
+                    data.replyId = replyId
+                    data.disId = disId
+                    data.userId = AppState.account.id
+                    await repliesService.toggleLike(data)
+                } catch (error) {
+                    Pop.error(error)
+                }
+            },
+            async toggleCommentVote(vote, commentId) {
+                try {
+                    if (vote == 'like') {
+                        Pop.success('liked')
+                    }
+                    if (vote == 'thumbDown') {
+                        Pop.success('Thumbs Down')
+                    }
+                    if (vote == 'thumbUp') {
+                        Pop.success('Thumbs Up')
+                    }
+                } catch (error) {
+                    Pop.error(error)
+                }
             }
+
         }
     }
 }
@@ -447,5 +480,15 @@ export default {
     background: black;
     border: none;
     border-radius: 5px;
+}
+
+.like:hover {
+    color: red;
+    text-shadow: 0px 0px 10px red;
+}
+
+.thumb:hover {
+    color: blue;
+    text-shadow: 0px 0px 10px blue;
 }
 </style>
