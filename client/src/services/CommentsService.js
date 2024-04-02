@@ -27,6 +27,16 @@ class CommentsService{
             Pop.error(error)
         }
     }
+    async toggleVote(data){
+        const res = await api.put(`api/comments/${data.comId}/vote`, data)
+        const comIndex = AppState.discussions.find(dis => dis.id == data.disId).comments.findIndex(com=> com.id == data.comId)
+        if(comIndex == -1){
+            Pop.error('Check your findIndex')
+            return
+        }
+        AppState.discussions.find(dis => dis.id == data.disId).comments.splice(comIndex, 1, new Comment(res.data))
+        
+    }
 //     async getComments(id) {
 //         try {
 //             const res = await api.get(`api/topics/${id}/discussions/comments`)

@@ -51,8 +51,19 @@ class CommentsService {
         com.body = comData.description || com.body
         com.picture = comData.picture || com.picture
         com.likes = comData.likes || com.likes
-        com.dislikes = comData.dislikes || com.dislikes
+        com.thumbsDown = comData.thumbsDown || com.thumbsDown
+        com.thumbsUp = comData.thumbsUp || com.thumbsUp
         await com.save()
+        return com
+    }
+    async voteComment(body, id) {
+        let push
+        if (body.vote == 'like') { push = { likes: body.userId } }
+        if (body.vote == 'thumbDown') { push = { thumbsDown: body.userId } }
+        if (body.vote == 'thumbUp') { push = { thumbsUp: body.userId } }
+        await dbContext.Comments.findByIdAndUpdate(id, { $pull: { likes: body.userId, thumbsDown: body.userId, thumbsUp: body.userId } })
+        await dbContext.Comments.findByIdAndUpdate(id, { $push: push })
+        const com = await dbContext.Comments.findById(id).populate('creator').populate('replies')
         return com
     }
     async deleteComment(id, accountId) {

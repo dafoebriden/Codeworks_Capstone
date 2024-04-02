@@ -8,8 +8,8 @@ export class RepliesController extends BaseController {
     constructor() {
         super('api/replies')
         this.router
-            .put('/:id', this.editReply)
             .use(Auth0Provider.getAuthorizedUserInfo)
+            .put('/:id/vote', this.voteReply)
             .post('', this.createReply)
     }
 
@@ -22,9 +22,10 @@ export class RepliesController extends BaseController {
             next(error)
         }
     }
-    async editReply(req, res, next) {
+    async voteReply(req, res, next) {
         try {
-            const reply = await repliesService.editReply(req.body, req.params.id)
+            req.body.userId = req.userInfo.id
+            const reply = await repliesService.voteReply(req.body, req.params.id)
             res.send(reply)
         } catch (error) {
             next(error)
