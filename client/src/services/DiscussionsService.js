@@ -44,14 +44,12 @@ class DiscussionsService{
         } catch (error) {
             Pop.error(error)
         }
-        
     }
-    async getDiscussions(id) {
+    async getDiscussionsForTopic(query) {
         try {
-            AppState.discussions = null
-            const res = await api.get(`api/topics/${id}/discussions`)
+            const res = await api.get(`api/discussions`, {params: query})
             logger.log('Got discussions:', res.data)
-            AppState.discussions = res.data.map(d=> new Discussion(d))
+            AppState.discussions.push(res.data.map(d=> new Discussion(d)))
         } catch (error) {
             Pop.error(error)
         }

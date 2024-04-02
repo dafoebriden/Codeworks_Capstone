@@ -23,7 +23,8 @@ DiscussionsSchema.virtual('comments', {
 
 export class DiscussionQuery {
     constructor(queryObject) {
-        this.name = new RegExp(queryObject.name, 'ig')
+        this.title = new RegExp(queryObject.title, 'ig')
         this.description = new RegExp(queryObject.description, 'ig')
+        this.topicId = queryObject.topicId
     }
 }

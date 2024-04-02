@@ -33,13 +33,14 @@ class TopicsService{
             logger.log('Got Topic:', res.data)
             AppState.activeTopic = new Topic(res.data)
     }
-    async getTopics(tagObjects, query) {
+    async getTopics(tagObjects,query, page) {
         AppState.topics = []
         const tags = tagObjects.value.map(tagObj => tagObj.id)
         query.tags = tags
+        query.page = page
         const res = await api.get('api/topics', {params: query})
         logger.log('Got Topics:', res.data)
-        AppState.topics = res.data.topics.map(t=> new Topic(t))
+        AppState.topics.push(...res.data.topics.map(t=> new Topic(t)))
 }
 }
 export const topicsService = new TopicsService()

@@ -11,7 +11,7 @@ class TopicsService {
     async getTopics(query) {
         const tagId = query.tags
         const pageNumber = parseInt(query.page) || 1
-        const topicLimit = 10
+        const topicLimit = 5
         const skipNumber = (pageNumber - 1) * topicLimit
         const topicQuery = new TopicQuery(query)
         const topicTags = await dbContext.TopicTags.find({ tagId })

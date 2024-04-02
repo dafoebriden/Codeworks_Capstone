@@ -224,6 +224,15 @@ export default {
       getTags(tagSearchData)
       // debounce(() => getTags(tagSearchData), 1000)
     })
+    window.onscroll = async () => {
+      let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+      let page = 1
+      if (bottomOfWindow) {
+        page += 1
+        const dis = await topicsService.getTopics(selectedTags, route.query, page)
+        return dis
+      }
+    }
     // function debounce(func, wait, immediate) {
     //   var timeout;
     //   return function () {

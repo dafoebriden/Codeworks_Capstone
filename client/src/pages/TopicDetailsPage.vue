@@ -146,6 +146,10 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <p @click="getCommentsForDiscussion(discussion.id)" role="button" class="reply-button">older
+                            comments</p>
+                    </div>
                     <div v-if="account.id">
                         <form @submit.prevent="createComment(discussion.id, commentData)"
                             class="d-flex align-items-center">
@@ -240,6 +244,7 @@ import { commentsService } from '../services/CommentsService';
 import { topicsService } from '../services/TopicsService';
 import { repliesService } from '../services/RepliesService';
 import { AppState } from '../AppState';
+import { router } from '../router';
 // import { tagsService } from '../services/TagsService';
 
 export default {
@@ -249,24 +254,40 @@ export default {
         const replyData = ref({ picture: '', body: '' })
         const route = useRoute()
         onMounted(() => {
+            AppState.discussions = []
             getTopic()
         })
+        window.onscroll = async () => {
+            let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+            let page = 1
+            if (bottomOfWindow) {
+                page += 1
+                router.push(`/discussions?page=${page}`)
+                const dis = await discussionsService.getDiscussionsForTopic(route.query)
+                return dis
+            }
+        }
         async function getTopic() {
             try {
                 const topic = await topicsService.getTopic(route.params.id)
-                getDiscussions()
+                getDiscussionsForTopic()
                 return topic
             } catch (error) {
                 Pop.error(error)
             }
         }
-        async function getDiscussions() {
+        async function getDiscussionsForTopic() {
             try {
-                const dis = await discussionsService.getDiscussions(route.params.id)
+                router.push('/discussions?page=1')
+                route.query.topicId = route.params.id
+                const dis = await discussionsService.getDiscussionsForTopic(route.query)
                 return dis
             } catch (error) {
                 Pop.error(error)
             }
+        }
+        function getNextDiscussions() {
+
         }
         async function createDiscussion(disData) {
             try {
@@ -300,6 +321,7 @@ export default {
             commentData,
             replyData,
             createDiscussion,
+            getNextDiscussions,
             createComment,
             createReply,
             account: computed(() => AppState.account),

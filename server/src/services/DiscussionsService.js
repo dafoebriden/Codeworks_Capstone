@@ -2,46 +2,55 @@ import { populate } from "dotenv"
 import { dbContext } from "../db/DbContext.js"
 import { DiscussionQuery } from "../models/Discussion.js"
 import { Forbidden } from "../utils/Errors.js"
+import { logger } from "../utils/Logger.js"
 
 class DiscussionsService {
-    async getDiscussionsForTopic(topicId) {
-        const dis = await dbContext.Discussions.find({ topicId })
-            .populate('creator')
-            .populate({
-                path: 'comments',
-                options: { sort: { 'createdAt': -1 }, limit: 3 },
-                populate: { path: 'creator replies' }
-            })
-        return dis
-    }
+    // async getDiscussionsForTopic(topicId) {
+    //     const dis = await dbContext.Discussions.find({ topicId })
+    //         .populate('creator')
+    //         .populate({
+    //             path: 'comments',
+    //             options: { sort: { 'createdAt': -1 }, limit: 3 },
+    //             populate: { path: 'creator replies' }
+    //         })
+    //     return dis
+    // }
     async getDiscussions(query) {
         const pageNumber = parseInt(query.page) || 1
-        const disLimit = 10
+        const disLimit = 5
         const skipNumber = (pageNumber - 1) * disLimit
         const disQuery = new DiscussionQuery(query)
         const dis = await dbContext.Discussions
             .find(disQuery)
             .limit(disLimit)
             .skip(skipNumber)
-            // .sort({ fireCount: 'decending' })
             .populate('creator')
             .populate({
                 path: 'comments',
-                options: { limit: 3 },
+                options: {
+                    sort: { 'createdAt': -1 },
+                    limit: 5
+                },
                 populate: {
                     path: 'creator replies'
                 }
             })
-
         const disCount = await dbContext.Discussions.countDocuments(disQuery)
         const responseObject = {
             discussions: dis,
             page: pageNumber,
             count: disCount,
-            totalPages: Math.ceil(disCount / 10)
+            totalPages: Math.ceil(disCount / 5)
         }
         return responseObject
     }
+    // async getDiscussions(query) {
+    //     const pageNumber = parseInt(query.page) || 1
+    //     const disLimit = 5
+    //     const skipNumber = (pageNumber - 1) * disLimit
+    //     const disQuery = new DiscussionQuery(query)
+    //     return disQuery
+    // }
     async getDiscussion(id) {
         const dis = await dbContext.Discussions.findById(id).populate('creator').populate('comments', 'creator body')
         return dis

@@ -48,7 +48,8 @@ export class TopicsController extends BaseController {
     }
     async getDiscussionsForTopic(req, res, next) {
         try {
-            const dis = await discussionsService.getDiscussionsForTopic(req.params.id)
+            req.query.topicId = req.params.id
+            const dis = await discussionsService.getDiscussionsForTopic(req.query)
             res.send(dis)
         } catch (error) {
             next(error)

@@ -17,7 +17,7 @@ class CommentsService {
     }
     async getComments(query) {
         const pageNumber = parseInt(query.page) || 1
-        const commentLimit = 20
+        const commentLimit = 5
         const skipNumber = (pageNumber - 1) * commentLimit
         const commentQuery = new CommentQuery(query)
         const comments = await dbContext.Comments
@@ -32,7 +32,7 @@ class CommentsService {
             comments: comments,
             page: pageNumber,
             count: commentCount,
-            totalPages: Math.ceil(commentCount / 20)
+            totalPages: Math.ceil(commentCount / 5)
         }
         return responseObject
     }

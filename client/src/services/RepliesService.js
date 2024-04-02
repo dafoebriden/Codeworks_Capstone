@@ -7,7 +7,6 @@ import { api } from "./AxiosService"
 class RepliesService{
 async createReply(data,disId){
     const res = await api.post('api/replies', data)
-    logger.log(data)
     AppState.discussions.find(dis => dis.id == disId).comments.find(com=> com.id == data.commentId).replies.push(new Reply(res.data))
 
 }

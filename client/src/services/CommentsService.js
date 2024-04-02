@@ -6,8 +6,10 @@ import Pop from "../utils/Pop"
 import { api } from "./AxiosService"
 
 class CommentsService{
-    async getCommentsForDiscussion(id) {
-        const res = await api.get(`api/discussions/${id}/comments`)
+    async getCommentsForDiscussion(id, page) {
+        let query = {}
+        query.page = {page: page}
+        const res = await api.get(`api/discussions/${id}/comments`, {params: query})
         logger.log('Got all comments for discussion:', res.data)
         const dis = AppState.discussions.find(dis=> dis.id = id)
         dis.comments = res.data
