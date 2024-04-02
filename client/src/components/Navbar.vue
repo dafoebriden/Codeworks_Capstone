@@ -21,11 +21,11 @@
     </div>
 
     <div class="d-flex search-login">
-      <div class="d-flex align-items-center input-group" style="max-width: 300px;">
+      <!-- <div class="d-flex align-items-center input-group" style="max-width: 300px;">
         <span class="input-group-text bar-tag bg-dark me-0" id="basic-addon1">🔍</span>
         <input v-model="topicNameSearch" type="text" class="form-control bar-tag bg-dark searchBar text-white"
           id="exampleInputEmail1" aria-describedby="emailHelp" placeholder=" Search Blaze">
-      </div>
+      </div> -->
       <div class="d-flex">
         <button class="btn text-light py-0" @click="toggleTheme">
           <i class="mdi" :class="theme == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"></i>
@@ -42,7 +42,6 @@ import { loadState, saveState } from '../utils/Store.js';
 import Login from './Login.vue';
 export default {
   setup() {
-    { }
     const topicNameSearch = ref('')
     const theme = ref(loadState('theme') || 'light')
 
@@ -107,12 +106,12 @@ a:hover {
   font-style: italic;
 }
 
-@media screen and (min-width: 468px) {
+/* @media screen and (min-width: 468px) {
 
   .navbar {
     height: 115px;
   }
-}
+} */
 
 @media screen and (min-width: 676px) {
 

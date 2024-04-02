@@ -1,3 +1,4 @@
+import { populate } from "dotenv"
 import { dbContext } from "../db/DbContext.js"
 import { DiscussionQuery } from "../models/Discussion.js"
 import { Forbidden } from "../utils/Errors.js"
@@ -8,9 +9,8 @@ class DiscussionsService {
             .populate('creator')
             .populate({
                 path: 'comments',
-                populate: {
-                    path: 'creator'
-                }
+                options: { sort: { 'createdAt': -1 }, limit: 3 },
+                populate: { path: 'creator replies' }
             })
         return dis
     }
@@ -27,9 +27,9 @@ class DiscussionsService {
             .populate('creator')
             .populate({
                 path: 'comments',
-                options: { limit: 1 },
+                options: { limit: 3 },
                 populate: {
-                    path: 'creator'
+                    path: 'creator replies'
                 }
             })
 

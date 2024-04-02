@@ -29,7 +29,7 @@
                 </button>
             </div>
             <div class="col-11  col-md-10 col-lg-9">
-                <div v-for="discussion in discussions" :key="discussion.id" class="discussions-card">
+                <div v-for="discussion in     discussions    " :key="discussion.id" class="discussions-card">
                     <div class="discussion-header-top" :style="{ backgroundImage: `url(${discussion.picture})` }">
                     </div>
                     <div class="discussion-header-bot">
@@ -37,16 +37,111 @@
                         <p>{{ discussion.description }}</p>
                     </div>
                     <div>
-                        <div class="d-flex align-items-center m-2" v-for="comment in discussion.comments"
+                        <div class="d-flex align-items-center m-2" v-for="comment in  discussion.comments "
                             :key="comment.id">
-                            <div>
+                            <div v-if="comment.creator.picture">
                                 <img class="rounded-circle img-fluid" :src="comment.creator.picture"
                                     style="height:25px; width: 25px;">
                             </div>
-                            <div class=" ms-2 comment-body d-flex flex-wrap">
+                            <div class=" ms-2 comment-body d-flex flex-column">
                                 <p class="m-0">{{ comment.body }}</p>
                                 <div v-if="comment.picture" class="comment-picture">
                                     <img class="img-fluid" :src="comment.picture">
+                                </div>
+                                <p class="m-0"><span :title="comment.likes.length + ' Likes'"><i
+                                            @click="toggleCommentVote('like', comment.id, discussion.id)" role="button"
+                                            :class="{ 'mdi mdi-heart heart-solid': comment.likes.includes(account.id), 'mdi mdi-heart-outline heart': !comment.likes.includes(account.id) }"></i>
+                                    </span> <span></span>
+                                    <span :title="comment.thumbsUp.length + ' Thumb Ups'"> <i
+                                            @click="toggleCommentVote('thumbUp', comment.id, discussion.id)"
+                                            role="button"
+                                            :class="{ 'mdi mdi-thumb-up thumb-solid': comment.thumbsUp.includes(account.id), 'mdi mdi-thumb-up-outline thumb': !comment.thumbsUp.includes(account.id) }"></i>
+                                    </span> <span></span>
+                                    <span :title="comment.thumbsDown.length + ' Thumb Downs'"> <i
+                                            @click="toggleCommentVote('thumbDown', comment.id, discussion.id)"
+                                            role="button"
+                                            :class="{ 'mdi mdi-thumb-down thumb-solid': comment.thumbsDown.includes(account.id), 'mdi mdi-thumb-down-outline thumb': !comment.thumbsDown.includes(account.id) }"></i>
+                                    </span>
+                                </p>
+                                <div class="replies" v-if="comment.open">
+                                    <div v-for="reply in  comment.replies    " :key="reply.id">
+                                        <!-- <div>
+                                            <img :src="reply.creator.img" style="height:15px; width: 15px;">
+                                        </div> -->
+                                        <div class="reply-body">
+                                            <p class="m-0">{{ reply.body }}</p>
+                                            <p class="m-0"><span :title="reply.likes.length + ' Likes'"><i
+                                                        @click="toggleReplyVote('like', reply.id, comment.id, discussion.id)"
+                                                        role="button"
+                                                        :class="{ 'mdi mdi-heart heart-solid': reply.likes.includes(account.id), 'mdi mdi-heart-outline heart': !reply.likes.includes(account.id) }"></i>
+                                                </span> <span></span>
+                                                <span :title="reply.thumbsUp.length + ' Thumb Ups'"><i
+                                                        @click="toggleReplyVote('thumbUp', reply.id, comment.id, discussion.id)"
+                                                        role="button"
+                                                        :class="{ 'mdi mdi-thumb-up thumb-solid': reply.thumbsUp.includes(account.id), 'mdi mdi-thumb-up-outline thumb': !reply.thumbsUp.includes(account.id) }"></i>
+                                                </span> <span></span>
+                                                <span :title="reply.thumbsDown.length + ' Thumb Downs'"><i
+                                                        @click="toggleReplyVote('thumbDown', reply.id, comment.id, discussion.id)"
+                                                        role="button"
+                                                        :class="{ 'mdi mdi-thumb-down thumb-solid': reply.thumbsDown.includes(account.id), 'mdi mdi-thumb-down-outline thumb': !reply.thumbsDown.includes(account.id) }"></i>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- NOTE reply form dropdown -->
+                                <div v-if="comment.replies.length == 0 || comment.open && account.id"
+                                    class="dropdown m-0 p-0">
+                                    <p class="reply-button dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        data-bs-auto-close="outside" aria-expanded="false" style="width: fit-content;">
+                                        reply
+                                    </p>
+                                    <ul class="dropdown-menu dropdown-menu-end p-0">
+                                        <div>
+                                            <form @submit.prevent="createReply(replyData, comment.id, discussion.id)"
+                                                class="d-flex align-items-center bg-black ps-2 m-0"
+                                                style="height: fit-content; border: 1px solid white;">
+                                                <div class=" input-group justify-content-end">
+                                                    <textarea v-model="replyData.body" type="text" rows="1"
+                                                        class=" invalid ps-2 bg-black text-white input-white no-scrollbar"
+                                                        id="body" aria-describedby="body" placeholder=" Reply" required
+                                                        style="border: none; border: 1px solid white;"></textarea>
+                                                    <span class="input-group-text m-0 p-0 bg-black " id="body">
+                                                        <div class="dropdown m-0 p-0">
+                                                            <button class="form-img-dropdown" type="button"
+                                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                                style="padding: 2px;">
+                                                                📸
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-start p-0">
+                                                                <div>
+                                                                    <input v-model="replyData.picture" type="text"
+                                                                        class=" ps-2 bg-black text-white input-white invalid "
+                                                                        id="picture" minlength="5" maxlength="1000"
+                                                                        placeholder="url"
+                                                                        style="border: none; width: 80%; border: 1px solid white;width: 200px">
+                                                                </div>
+                                                            </ul>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                                <button type="submit" class="bar-tag bg-success m-2">Reply
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </ul>
+                                </div>
+                                <div v-if="comment.open" class="d-flex justify-content-end">
+                                    <p @click="comment.open = false" role="button" class="m-0 text-white"
+                                        style="width: fit-content;">X
+                                    </p>
+                                </div>
+                                <!-- NOTE replies count and dropdown -->
+                                <div @click="comment.open = true" v-if="comment.replies.length && !comment.open">
+                                    <p class="reply-button" role="button" style="width: fit-content;">{{
+        comment.replies.length }} <span
+                                            v-if="comment.replies.length == 1">reply</span><span
+                                            v-if="comment.replies.length >= 2">replies</span></p>
                                 </div>
                             </div>
                         </div>
@@ -54,28 +149,24 @@
                     <div v-if="account.id">
                         <form @submit.prevent="createComment(discussion.id, commentData)"
                             class="d-flex align-items-center">
-                            <div class="input-group">
+                            <div class="input-group justify-content-end">
                                 <textarea v-model="commentData.body" type="text" rows="1"
-                                    class="form-control invalid ms-2" id="body" aria-describedby="body"
-                                    placeholder=" Comment" required>
-                                </textarea>
-                                <span class="input-group-text m-0 p-0" id="body">
+                                    class=" invalid ps-2 bg-black text-white input-white no-scrollbar" id="body"
+                                    aria-describedby="body" placeholder=" Comment" required
+                                    style="border: none; width: 80%; border: 1px solid white;">
+                            </textarea>
+                                <span class="input-group-text m-0 p-0 bg-black " id="body">
                                     <div class="dropdown m-0 p-0">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="form-img-dropdown" data-bs-auto-close="outside" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="padding: 2px;">
                                             📸
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-start p-0">
                                             <div>
                                                 <input v-model="commentData.picture" type="text"
-                                                    class="form-control invalid " id="picture" minlength="5"
-                                                    maxlength="1000" placeholder="url" style="width: 200px;">
-                                                <!-- <div id="pictureFeedback" class="invalid-feedback">
-                                                    Please choose a picture.
-                                                </div>
-                                                <div class="valid-feedback">
-                                                    Looks good!
-                                                </div> -->
+                                                    class=" ps-2 bg-black text-white input-white invalid " id="picture"
+                                                    minlength="5" maxlength="1000" placeholder="url"
+                                                    style="border: none; width: 80%; border: 1px solid white;width: 200px">
                                             </div>
                                         </ul>
                                     </div>
@@ -89,6 +180,7 @@
 
                         <!-- TODO -->
                         <!-- <button @click="editDiscussion(discussion.id)" class="bar-tag bg-dark m-2">Edit
+                    </div>
                         </button> -->
                         <button @click="deleteDiscussion(discussion.id)" class="bar-tag bg-danger m-2">Delete
                         </button>
@@ -98,6 +190,7 @@
 
         </div>
     </div>
+    <!-- NOTE New Discussion Form Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -141,20 +234,19 @@
 <script>
 import { useRoute } from 'vue-router';
 import Pop from '../utils/Pop';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { discussionsService } from '../services/DiscussionsService';
 import { commentsService } from '../services/CommentsService';
 import { topicsService } from '../services/TopicsService';
+import { repliesService } from '../services/RepliesService';
 import { AppState } from '../AppState';
-import { logger } from '../utils/Logger';
-import { formToJSON } from 'axios';
-import { reference } from '@popperjs/core';
 // import { tagsService } from '../services/TagsService';
 
 export default {
     setup() {
-        const editableDiscussionData = { title: '', picture: '', description: '' }
-        const commentData = { picture: '', body: '', discussionId: '' }
+        const editableDiscussionData = ref({ title: '', picture: '', description: '' })
+        const commentData = ref({ picture: '', body: '', discussionId: '' })
+        const replyData = ref({ picture: '', body: '' })
         const route = useRoute()
         onMounted(() => {
             getTopic()
@@ -180,8 +272,6 @@ export default {
             try {
                 disData.topicId = route.params.id
                 const dis = await discussionsService.createDiscussion(disData)
-                this.editableDiscussionData = {}
-                disData = {}
                 return dis
             } catch (error) {
                 Pop.error(error)
@@ -191,8 +281,16 @@ export default {
             try {
                 commentData.discussionId = id
                 const com = await commentsService.createComment(commentData)
-                this.commentData = {}
                 return com
+            } catch (error) {
+                Pop.error(error)
+            }
+        }
+        async function createReply(data, commentId, disId) {
+            try {
+                data.commentId = commentId
+                const reply = await repliesService.createReply(data, disId)
+                return reply
             } catch (error) {
                 Pop.error(error)
             }
@@ -200,8 +298,10 @@ export default {
         return {
             editableDiscussionData,
             commentData,
+            replyData,
             createDiscussion,
             createComment,
+            createReply,
             account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
             discussions: computed(() => AppState.discussions),
@@ -222,7 +322,33 @@ export default {
                 } catch (error) {
                     Pop.error(error)
                 }
+            },
+            async toggleReplyVote(vote, replyId, comId, disId) {
+                try {
+                    let data = {
+                        vote: vote,
+                        replyId: replyId,
+                        comId: comId,
+                        disId: disId,
+                    }
+                    await repliesService.toggleLike(data)
+                } catch (error) {
+                    Pop.error(error)
+                }
+            },
+            async toggleCommentVote(vote, comId, disId) {
+                try {
+                    let data = {
+                        vote: vote,
+                        comId: comId,
+                        disId: disId,
+                    }
+                    await commentsService.toggleVote(data)
+                } catch (error) {
+                    Pop.error(error)
+                }
             }
+
         }
     }
 }
@@ -305,7 +431,10 @@ export default {
 .comment-body {
     border: 1px solid white;
     width: 100%;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 5px;
     color: white;
     margin: 5px;
 }
@@ -323,5 +452,64 @@ export default {
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     margin-right: 10px;
+}
+
+.reply-button {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    font-size: x-small;
+    font-style: italic;
+}
+
+.reply-button:hover {
+    text-shadow: 0px 0px 5px white
+}
+
+.input-white::-webkit-input-placeholder {
+    color: white;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none
+}
+
+.replies {
+    margin-left: 20px;
+}
+
+.reply-body {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding-left: 3px;
+    font-size: small;
+    font-style: italic;
+    border: 1px solid white;
+}
+
+.form-img-dropdown {
+    background: black;
+    border: none;
+    border-radius: 5px;
+}
+
+.heart:hover {
+    color: red;
+    text-shadow: 0px 0px 10px red;
+}
+
+.heart-solid {
+    color: red;
+    text-shadow: 0px 0px 10px red;
+
+}
+
+.thumb:hover {
+    color: blue;
+    text-shadow: 0px 0px 10px blue;
+}
+
+.thumb-solid {
+    color: blue;
+    text-shadow: 0px 0px 10px blue;
 }
 </style>
