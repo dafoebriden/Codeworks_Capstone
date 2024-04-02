@@ -191,7 +191,7 @@
                     </div>
                 </div>
             </div>
-
+            <div v-observe-visibility="infinityScroll"></div>
         </div>
     </div>
     <!-- NOTE New Discussion Form Modal -->
@@ -245,7 +245,9 @@ import { topicsService } from '../services/TopicsService';
 import { repliesService } from '../services/RepliesService';
 import { AppState } from '../AppState';
 import { router } from '../router';
-// import { tagsService } from '../services/TagsService';
+import VueObserveVisibility from "vue-observe-visibility";
+
+
 
 export default {
     setup() {
@@ -253,19 +255,16 @@ export default {
         const commentData = ref({ picture: '', body: '', discussionId: '' })
         const replyData = ref({ picture: '', body: '' })
         const route = useRoute()
+        let page = 1
         onMounted(() => {
-            AppState.discussions = []
             getTopic()
         })
-        window.onscroll = async () => {
-            let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-            let page = 1
-            if (bottomOfWindow) {
-                page += 1
-                router.push(`/discussions?page=${page}`)
-                const dis = await discussionsService.getDiscussionsForTopic(route.query)
-                return dis
-            }
+        async function infinityScroll(isVisible) {
+            if (!isVisible) return
+            page++
+            router.push(`/topics/${route.params.id}/discussions?page=${page}`)
+            const dis = await discussionsService.getDiscussionsForTopic(route.query)
+            return dis
         }
         async function getTopic() {
             try {
@@ -278,7 +277,6 @@ export default {
         }
         async function getDiscussionsForTopic() {
             try {
-                router.push('/discussions?page=1')
                 route.query.topicId = route.params.id
                 const dis = await discussionsService.getDiscussionsForTopic(route.query)
                 return dis
@@ -324,6 +322,8 @@ export default {
             getNextDiscussions,
             createComment,
             createReply,
+            infinityScroll,
+            setTimeout,
             account: computed(() => AppState.account),
             topic: computed(() => AppState.activeTopic),
             discussions: computed(() => AppState.discussions),

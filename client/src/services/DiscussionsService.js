@@ -49,7 +49,7 @@ class DiscussionsService{
         try {
             const res = await api.get(`api/discussions`, {params: query})
             logger.log('Got discussions:', res.data)
-            AppState.discussions.push(res.data.map(d=> new Discussion(d)))
+            AppState.discussions.push(...res.data.discussions.map(d=> new Discussion(d)))
         } catch (error) {
             Pop.error(error)
         }

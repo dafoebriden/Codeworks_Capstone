@@ -222,38 +222,15 @@ export default {
     })
     watch(tagSearchData, () => {
       getTags(tagSearchData)
-      // debounce(() => getTags(tagSearchData), 1000)
     })
-    window.onscroll = async () => {
-      let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-      let page = 1
-      if (bottomOfWindow) {
-        page += 1
-        const dis = await topicsService.getTopics(selectedTags, route.query, page)
-        return dis
-      }
-    }
-    // function debounce(func, wait, immediate) {
-    //   var timeout;
-    //   return function () {
-    //     var context = this,
-    //       args = arguments;
-    //     var callNow = immediate && !timeout;
-    //     clearTimeout(timeout);
-    //     timeout = setTimeout(function () {
-    //       timeout = null;
-    //       if (!immediate) {
-    //         func.apply(context, args);
-    //       }
-    //     }, wait);
-    //     if (callNow) func.apply(context, args);
+    // window.onscroll = async () => {
+    //   let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+    //   let page = 1
+    //   if (bottomOfWindow) {
+    //     page += 1
+    //     const dis = await topicsService.getTopics(selectedTags, route.query, page)
+    //     return dis
     //   }
-    // }
-    // async function lookAhead() {
-    //   let value = tagSearchData.value
-    //   let regex = new RegExp(value, 'ig')
-    //   let choices = await AppState.tags.filter(tag => tag.name.match(regex))
-    //   AppState.tagsSearch = choices
     // }
     async function getTags(tagSearchData) {
       try {
@@ -265,8 +242,7 @@ export default {
     }
     async function getTopic(id) {
       try {
-        router.push(`/topics/${id}`)
-        // await topicsService.getTopic(id)
+        router.push(`/topics/${id}/discussions`)
       } catch (error) {
         Pop.error(error)
       }
