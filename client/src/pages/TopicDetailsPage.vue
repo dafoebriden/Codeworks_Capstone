@@ -245,7 +245,8 @@ import { topicsService } from '../services/TopicsService';
 import { repliesService } from '../services/RepliesService';
 import { AppState } from '../AppState';
 import { router } from '../router';
-import VueObserveVisibility from "vue-observe-visibility";
+import { useInfinateScroll } from '@vueuse/core'
+
 
 
 
@@ -260,11 +261,12 @@ export default {
             getTopic()
         })
         async function infinityScroll(isVisible) {
-            if (!isVisible) return
+            this.isVisible = isVisible
             page++
             router.push(`/topics/${route.params.id}/discussions?page=${page}`)
             const dis = await discussionsService.getDiscussionsForTopic(route.query)
             return dis
+
         }
         async function getTopic() {
             try {
@@ -370,12 +372,12 @@ export default {
                     Pop.error(error)
                 }
             }
-
         }
     }
 }
 </script>
-
+<script src="vue.js"></script>
+<script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
 
 <style lang="scss" scoped>
 .container {

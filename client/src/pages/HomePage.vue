@@ -223,15 +223,6 @@ export default {
     watch(tagSearchData, () => {
       getTags(tagSearchData)
     })
-    // window.onscroll = async () => {
-    //   let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-    //   let page = 1
-    //   if (bottomOfWindow) {
-    //     page += 1
-    //     const dis = await topicsService.getTopics(selectedTags, route.query, page)
-    //     return dis
-    //   }
-    // }
     async function getTags(tagSearchData) {
       try {
         const tags = await tagsService.getTags(tagSearchData)
