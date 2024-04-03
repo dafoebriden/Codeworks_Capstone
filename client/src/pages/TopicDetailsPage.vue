@@ -28,7 +28,7 @@
                     New Discussion
                 </button>
             </div>
-            <div class="col-11  col-md-10 col-lg-9">
+            <div v--infinite-scroll="[infinityScroll, { distance: 10 }]" class="col-11  col-md-10 col-lg-9">
                 <div v-for="discussion in     discussions    " :key="discussion.id" class="discussions-card">
                     <div class="discussion-header-top" :style="{ backgroundImage: `url(${discussion.picture})` }">
                     </div>
@@ -191,7 +191,6 @@
                     </div>
                 </div>
             </div>
-            <div v-observe-visibility="infinityScroll"></div>
         </div>
     </div>
     <!-- NOTE New Discussion Form Modal -->
@@ -245,7 +244,7 @@ import { topicsService } from '../services/TopicsService';
 import { repliesService } from '../services/RepliesService';
 import { AppState } from '../AppState';
 import { router } from '../router';
-import { useInfinateScroll } from '@vueuse/core'
+import { vInfiniteScroll } from '@vueuse/components'
 
 
 
@@ -260,8 +259,7 @@ export default {
         onMounted(() => {
             getTopic()
         })
-        async function infinityScroll(isVisible) {
-            this.isVisible = isVisible
+        async function infinityScroll() {
             page++
             router.push(`/topics/${route.params.id}/discussions?page=${page}`)
             const dis = await discussionsService.getDiscussionsForTopic(route.query)
@@ -376,9 +374,6 @@ export default {
     }
 }
 </script>
-<script src="vue.js"></script>
-<script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
-
 <style lang="scss" scoped>
 .container {
     width: 100vw
